@@ -13,7 +13,7 @@ import { responseFormater } from "../../../utils/response";
  * console.log(catalog)
  */
 async function getAllCatalog(request: FastifyRequest, reply: FastifyReply) {
-
+    
     const catalog = await catalogService.getAllCatalog()
     return reply.code(200).send(responseFormater(200, 'success', catalog))
 
@@ -35,7 +35,7 @@ async function getCatalogById(request: FastifyRequest<{ Params: { id: string } }
     if (!catalog) {
         return reply.code(404).send(responseFormater(404, 'error', "Id tidak ditemukan"))
     }
-    return reply.code(200).send(responseFormater(200, 'success', catalog))
+    return reply.code(200).send(responseFormater(201, 'success', catalog))
 
 }
 
@@ -54,7 +54,7 @@ async function createCatalog(request: FastifyRequest<{ Body: CreateCatalogInput 
     const body = createCatalogSchema.parse(request.body)
     const catalog = await catalogService.createCatalog(body)
 
-    return reply.code(201).send(catalog)
+    return reply.code(201).send(responseFormater(200, "success", catalog))
 
 }
 
