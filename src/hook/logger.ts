@@ -1,11 +1,6 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify"
 
-declare module "fastify" {
-    interface FastifyRequest {
-        startTime?: number
-        isError?: boolean
-    }
-}
+
 
 // 🎨 ANSI Colors
 const colors = {
@@ -40,25 +35,23 @@ function colorMethod(method: string) {
     }
 }
 
-// ======================
-// HOOKS
-// ======================
 
 async function onRequestLogging(
     request: FastifyRequest,
     reply: FastifyReply
 ) {
-    request.startTime = Date.now()
+    request.setDecorator<number>('startTime',Date.now()) 
 }
 
 async function onResponseLogging(
     request: FastifyRequest,
     reply: FastifyReply
 ) {
+    const startTime = request.getDecorator<number>('startTime')
+    const isError = request.getDecorator<boolean>('isError')
+    if (isError) return
 
-    if ((request.isError as boolean)) return
-
-    const duration = Date.now() - (request.startTime ?? Date.now())
+    const duration = Date.now() - (startTime ?? Date.now())
 
     const method = colorMethod(request.method).padEnd(6)
     const url = request.url.padEnd(25)
@@ -75,10 +68,11 @@ async function onErrorLogging(
     reply: FastifyReply,
     error: FastifyError
 ) {
-    request.isError = true as any
+    const startTime = request.getDecorator<number>('startTime')
+    request.setDecorator<boolean>('isError',true) 
 
     const duration =
-        Date.now() - (request.startTime ?? Date.now())
+        Date.now() - (startTime ?? Date.now())
 
     const method = colorMethod(request.method.padEnd(6))
     const url = request.url.padEnd(25)

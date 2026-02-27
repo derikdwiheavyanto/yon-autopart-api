@@ -2,15 +2,16 @@ import Fastify from 'fastify'
 import dotenv from 'dotenv'
 import catalogRouteUser from './modules/catalog/catalog.user.routes'
 import catalogRouteAdmin from './modules/catalog/catalog.admin.routes'
-import { onErrorLogging, onRequestLogging, onResponseLogging } from './hook/logger'
+import { onRequestLogging, onResponseLogging } from './hook/logger'
 import pino from 'pino'
 import cors from '@fastify/cors'
+import fastifyExpress from '@fastify/express'
 import errorHandler from './error_handler/error'
 
 dotenv.config()
 
 
-//pino logging
+//pino config logging
 const log = pino({
     level: "debug",
     transport: {
@@ -28,12 +29,16 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 const server = Fastify({
     loggerInstance: isProduction ? undefined : log,
-    disableRequestLogging: true
-    
+    disableRequestLogging: true,
 })
 
 
+
 async function start() {
+    //Decorate
+    server.decorateRequest('startTime', 0)
+    server.decorateRequest('isError', false)
+
     //Hook
     server.addHook('onRequest', onRequestLogging)
     server.addHook('onResponse', onResponseLogging)
@@ -41,10 +46,13 @@ async function start() {
     //errorHanlder
     server.setErrorHandler(errorHandler)
 
+    // Middleware
+    // server.register(fastifyExpress)
+    
     //register
-    server.register(cors,{
+    server.register(cors, {
         origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     })
     server.register(catalogRouteUser, { prefix: "/api/catalog" })
     server.register(catalogRouteAdmin, { prefix: "/api/admin/catalog" })
@@ -59,7 +67,6 @@ async function start() {
             server.log.error(err)
             process.exit(1)
         }
-        server.log.info(`server listening on ${address}`)
     })
 }
 

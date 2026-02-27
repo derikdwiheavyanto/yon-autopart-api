@@ -42,4 +42,4 @@ Content-Type: application/json
 }
 
 ### Delete Catalog
-DELETE  http://localhost:3333/api/admin/catalog/1
+DELETE  http://localhost:3333/api/admin/catalog/2

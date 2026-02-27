@@ -72,9 +72,13 @@ async function updateCatalog(request: FastifyRequest<{ Params: { id: string }, B
 
     const id = Number(request.params.id)
     const body = request.body
-    const catalog = await catalogService.updateCatalog({ id: id, input: body })
+    const result = await catalogService.updateCatalog({ id: id, input: body })
 
-    return reply.code(200).send(responseFormater(200, "success", catalog))
+    if (!result) {
+        return reply.code(404).send(responseFormater(404, "error", "Id tidak ditemukan"))
+    }
+
+    return reply.code(200).send(responseFormater(200, "success", result))
 
 }
 

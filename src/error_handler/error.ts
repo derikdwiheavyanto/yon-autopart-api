@@ -22,8 +22,6 @@ async function errorHandler(error: FastifyError, request: FastifyRequest, reply:
 
     if (error instanceof ZodError) {
         zodErrorHandler(error, request, reply)
-        onErrorLogging(request, reply, error)
-
         return
     }
 
