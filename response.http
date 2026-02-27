@@ -1,0 +1,46 @@
+# USER
+### Get Catalog
+GET http://localhost:3333/api/catalog
+
+
+
+# ADMIN
+
+### Get Catalog
+GET http://localhost:3333/api/admin/catalog
+
+### Get Catalog id
+GET http://localhost:3333/api/admin/catalog/1
+
+
+### Create Catalog Succes
+POST http://localhost:3333/api/admin/catalog
+Content-Type: application/json
+
+{
+  "title": "Velg Racing R15",
+  "image": "https://example.com/velg.jpg",
+  "price": 2000,
+  "description": "Barang langka berkualitas gampang rusak"
+}
+
+### Create Catalog Failed
+POST http://localhost:3333/api/admin/catalog
+Content-Type: application/json
+
+{
+  "title": "Velg Racing R15",
+  "image": "https://example.com/velg.jpg"
+}
+
+### Update Catalog
+PATCH  http://localhost:3333/api/admin/catalog/1
+Content-Type: application/json
+
+{
+  "price": 2000,
+  "title": "pelk turbo"
+}
+
+### Delete Catalog
+DELETE  http://localhost:3333/api/admin/catalog/1
