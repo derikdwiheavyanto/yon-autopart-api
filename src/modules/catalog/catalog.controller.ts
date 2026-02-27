@@ -58,6 +58,16 @@ async function createCatalog(request: FastifyRequest<{ Body: CreateCatalogInput 
 
 }
 
+/**
+ * Update a catalog by its ID.
+ * @param {FastifyRequest<{ Params: { id: string }, Body: UpdateCatalogInput }>} request - The request object of Fastify.
+ * @param {FastifyReply} reply - The response object of Fastify.
+ * @returns {Promise<FastifyReply>} a promise containing the response of the API.
+ * @example
+ * const response = await updateCatalog(request, reply)
+ * const catalog = response.body
+ * console.log(catalog)
+ */
 async function updateCatalog(request: FastifyRequest<{ Params: { id: string }, Body: UpdateCatalogInput }>, reply: FastifyReply,) {
 
     const id = Number(request.params.id)
@@ -68,6 +78,16 @@ async function updateCatalog(request: FastifyRequest<{ Params: { id: string }, B
 
 }
 
+/**
+ * Hapus catalog berdas id yang diberikan.
+ * @param {FastifyRequest<{ Params: { id: string } >} request - The request object of Fastify.
+ * @param {FastifyReply} reply - The response object of Fastify.
+ * @returns {Promise<FastifyReply>} a promise containing the response of the API.
+ * @example
+ * const response = await deleteCatalog(request, reply)
+ * const message = response.body
+ * console.log(message)
+ */
 async function deleteCatalog(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     const id = Number(request.params.id)
     const result = await catalogService.deleteCatalog(id)
@@ -82,5 +102,5 @@ async function deleteCatalog(request: FastifyRequest<{ Params: { id: string } }>
 
 
 export const catalogController = {
-    createCatalog, getAllCatalog,getCatalogById, updateCatalog, deleteCatalog
+    createCatalog, getAllCatalog, getCatalogById, updateCatalog, deleteCatalog
 }

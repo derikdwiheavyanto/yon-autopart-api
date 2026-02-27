@@ -12,7 +12,6 @@ GET http://localhost:3333/api/admin/catalog
 ### Get Catalog id
 GET http://localhost:3333/api/admin/catalog/1
 
-
 ### Create Catalog Succes
 POST http://localhost:3333/api/admin/catalog
 Content-Type: application/json
