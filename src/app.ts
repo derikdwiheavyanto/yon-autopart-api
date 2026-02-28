@@ -11,7 +11,6 @@ import fastifyJwt from '@fastify/jwt'
 import AuthRoutes from './modules/auth/routes/auth.route'
 import fastifySwagger from '@fastify/swagger'
 import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProvider } from 'fastify-type-provider-zod'
-import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
 
 
 

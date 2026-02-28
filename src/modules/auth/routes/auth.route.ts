@@ -16,7 +16,7 @@ async function AuthRoutes(server: FastifyInstance) {
             summary: "Login User",
             body: LoginInputSchema,
             response: {
-                200: responseSchema(200, "success", LoginResponseSchema),
+                200: responseSchema(200, "success", LoginResponseSchema,),
                 401: responseErrorSchema(401, "Unauthorized", "Email atau password salah")
             }
         })

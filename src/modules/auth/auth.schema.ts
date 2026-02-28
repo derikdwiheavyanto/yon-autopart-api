@@ -1,12 +1,18 @@
-import { z } from "@/lib/zod"
+import { z } from "zod"
 
 /**==================
  * Base Schema
  * ==================*/
 const BaseAuthSchema = {
-    email: z.email({ error: (iss) => iss.input != null ? "Harus berupa huruf" : "Email Harus diisi" })
-        .openapi({ example: "derik@gmail.com" }),
-    password: z.string().openapi({ example: "derik" })
+    email: z.email({ error: (iss) => iss.input != null ? "Harus berupa huruf" : "Email Harus diisi" }),
+    password: z.string()
+}
+
+const BaseAuthResponseExample = {
+    name: "derik",
+    email: "derik@gmail.com",
+    age: 22,
+    address: "Besuki Tulungagung"
 }
 
 /**==================
@@ -14,6 +20,11 @@ const BaseAuthSchema = {
  * ==================*/
 export const LoginInputSchema = z.object({
     ...BaseAuthSchema
+}).meta({
+    example: {
+        email: "derik@gmail.com",
+        password: "derik"
+    }
 })
 
 export const RegisterInputSchema = z.object({
@@ -21,6 +32,12 @@ export const RegisterInputSchema = z.object({
     ...BaseAuthSchema,
     age: z.number(),
     address: z.string().optional(),
+}).meta({
+    example: {
+        ...BaseAuthResponseExample,
+        password: "derik",
+
+    }
 })
 
 
@@ -28,18 +45,30 @@ export const RegisterInputSchema = z.object({
  * Response Schema
  * ==================*/
 export const LoginResponseSchema = z.object({
-    id: z.number().openapi({ example: 1 }),
-    name: z.string().openapi({ example: "derik" }),
-    email: z.string().openapi({ example: "derik@gmail.com" }),
-    age: z.number().openapi({ example: 22 }),
-    address: z.string().openapi({ example: "Besuki Tulungagung" }),
-    token: z.string().openapi({ example: 1 })
+    id: z.number(),
+    name: z.string(),
+    email: z.string(),
+    age: z.number(),
+    address: z.string(),
+    token: z.string()
+}).meta({
+    example: {
+        ...BaseAuthResponseExample,
+        token: "token"
+
+    }
 })
 
 export const RegisterResponseSchema = z.object({
     id: z.number(),
     name: z.string(),
     email: z.string(),
+    age: z.number(),
+    address: z.string(),
+}).meta({
+    example: {
+        ...BaseAuthResponseExample,
+    }
 })
 
 
