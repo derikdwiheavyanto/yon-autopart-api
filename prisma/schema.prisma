@@ -14,11 +14,11 @@ datasource db {
 }
 
 model user {
-  id       Int    @id @default(autoincrement())
-  name     String @db.VarChar(50)
-  email    String @db.VarChar(50)
-  password String @db.VarChar(50)
-  age      Int    @db.Integer
+  id       Int     @id @default(autoincrement())
+  name     String  @db.VarChar(50)
+  email    String  @unique @db.VarChar(50)
+  password String  @db.VarChar(50)
+  age      Int     @db.Integer
   address  String? @db.VarChar(100)
 }
 

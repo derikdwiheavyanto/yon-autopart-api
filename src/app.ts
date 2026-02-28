@@ -1,14 +1,14 @@
 import Fastify from 'fastify'
 import dotenv from 'dotenv'
-import catalogRouteUser from './modules/catalog/catalog.user.routes'
-import catalogRouteAdmin from './modules/catalog/catalog.admin.routes'
+dotenv.config()
 import { onRequestLogging, onResponseLogging } from './hook/logger'
 import pino from 'pino'
 import cors from '@fastify/cors'
-import fastifyExpress from '@fastify/express'
-import errorHandler from './error_handler/error'
-
-dotenv.config()
+import errorHandler from './error_handler/error_handler'
+import catalogRouteUser from './modules/catalog/routes/catalog.user.route'
+import catalogRouteAdmin from './modules/catalog/routes/catalog.admin.route'
+import fastifyJwt from '@fastify/jwt'
+import AuthRoutes from './modules/auth/routes/auth.route'
 
 
 //pino config logging
@@ -46,16 +46,19 @@ async function start() {
     //errorHanlder
     server.setErrorHandler(errorHandler)
 
-    // Middleware
-    // server.register(fastifyExpress)
-    
+
     //register
     server.register(cors, {
         origin: '*',
         methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     })
+    server.register(fastifyJwt, { secret: "supersecret" })
+
+    // register route
+    server.register(AuthRoutes, {prefix:"/api/auth"})
     server.register(catalogRouteUser, { prefix: "/api/catalog" })
     server.register(catalogRouteAdmin, { prefix: "/api/admin/catalog" })
+    
 
 
     //fastify listen
