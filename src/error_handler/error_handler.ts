@@ -3,7 +3,7 @@ import { errorFormater, zodErrorFormater } from "../../utils/response";
 import dotenv from 'dotenv'
 import { ZodError } from "zod";
 import { onErrorLogging } from "../hook/logger";
-import {AppError} from "../errors/AppError"
+import { AppError } from "../errors/AppError"
 dotenv.config()
 
 

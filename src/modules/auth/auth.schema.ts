@@ -10,14 +10,15 @@ export const LoginInputSchema = z.object({
     ...BaseAuthSchema
 })
 
-const RegisterInputSchema = z.object({
+export const RegisterInputSchema = z.object({
     name: z.string(),
     ...BaseAuthSchema,
-    age: z.number().optional(),
+    age: z.number(),
     address: z.string().optional(),
 })
 
 
 export type LoginInput = z.infer<typeof LoginInputSchema>
+export type RegisterInput = z.infer<typeof RegisterInputSchema>
 
 

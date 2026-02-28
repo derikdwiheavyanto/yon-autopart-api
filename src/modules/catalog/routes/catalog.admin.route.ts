@@ -1,4 +1,4 @@
-import fastify, { FastifyInstance } from "fastify";
+import { FastifyInstance } from "fastify";
 import { catalogController } from "../catalog.controller";
 import { authMiddleware } from "../../../middleware/auth.middleware";
 
@@ -9,7 +9,7 @@ import { authMiddleware } from "../../../middleware/auth.middleware";
  *
  */
 async function catalogRouteAdmin(server: FastifyInstance) {
-    server.addHook('onRequest',authMiddleware)
+    server.addHook('onRequest', authMiddleware)
     server.get('/', catalogController.getAllCatalog)
     server.get('/:id', catalogController.getCatalogById)
     server.post('/', catalogController.createCatalog)

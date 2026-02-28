@@ -5,14 +5,25 @@ POST http://localhost:3333/api/auth/login
 Content-Type: application/json
 
 {
-  "email":"asd@asdf.com",
-  "password":"asdf"
+  "email":"derik@gmail.com",
+  "password":"derik"
+}
+
+###Register
+POST http://localhost:3333/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "derik",
+  "email":"derik@gmail.com",
+  "password":"derik",
+  "age": 22,
+  "address": "Besuki Tulungagung"
 }
 
 # USER
 ### Get Catalog
 GET http://localhost:3333/api/catalog
-
 
 
 # ADMIN

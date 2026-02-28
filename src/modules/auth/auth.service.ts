@@ -1,9 +1,8 @@
-import { email } from "zod"
-import UserRepository from "../user/user.repository"
 import AuthRepository from "./auth.repository"
-import { LoginInput } from "./auth.schema"
+import { LoginInput, RegisterInput } from "./auth.schema"
 import bcrypt from "bcrypt"
 import { UnauthorizedError } from "../../errors/UnautorizedError"
+import fastify from "fastify"
 
 
 async function login(input: LoginInput) {
@@ -19,6 +18,7 @@ async function login(input: LoginInput) {
 
 
     return {
+        id: user.id,
         name: user.name,
         email: user.email,
         age: user.age,
@@ -26,6 +26,14 @@ async function login(input: LoginInput) {
     }
 }
 
+async function register(input: RegisterInput) {
+    const saltRound = 10
+    const password = input.password
+    const hash = await bcrypt.hash(password, saltRound)
 
-const AuthService = { login }
+    return await AuthRepository.createUser({ ...input, password: hash })
+}
+
+
+const AuthService = { login, register }
 export default AuthService

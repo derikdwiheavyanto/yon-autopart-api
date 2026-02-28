@@ -2,13 +2,19 @@ import { prisma } from "../../db/prisma";
 
 
 
-async function findIdUser(id: number) {
+async function findById(id: number) {
     return await prisma.user.findUnique({
         where: { id }
     })
 }
 
+async function findAll() {
+    return await prisma.user.findMany()
+}
 
-const UserRepository = { findIdUser }
+
+
+
+const UserRepository = { findById }
 
 export default UserRepository
