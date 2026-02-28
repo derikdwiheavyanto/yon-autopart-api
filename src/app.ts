@@ -9,6 +9,10 @@ import catalogRouteUser from './modules/catalog/routes/catalog.user.route'
 import catalogRouteAdmin from './modules/catalog/routes/catalog.admin.route'
 import fastifyJwt from '@fastify/jwt'
 import AuthRoutes from './modules/auth/routes/auth.route'
+import fastifySwagger from '@fastify/swagger'
+import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProvider } from 'fastify-type-provider-zod'
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
+
 
 
 //pino config logging
@@ -30,8 +34,10 @@ const isProduction = process.env.NODE_ENV === 'production'
 const server = Fastify({
     loggerInstance: isProduction ? undefined : log,
     disableRequestLogging: true,
-})
+}).withTypeProvider<ZodTypeProvider>()
 
+server.setValidatorCompiler(validatorCompiler)
+server.setSerializerCompiler(serializerCompiler)
 
 
 async function start() {
@@ -46,6 +52,49 @@ async function start() {
     //errorHanlder
     server.setErrorHandler(errorHandler)
 
+    // swagger
+    await server.register(fastifySwagger, {
+        openapi: {
+            openapi: '3.0.0',
+            info: {
+                title: 'Yon Auto-Part API DOCS',
+                description: 'Documentation API for Yon Auto-Part APP ',
+                version: '0.1.0'
+            },
+            servers: [
+                {
+                    url: 'http://localhost:3333',
+                    description: 'Development server'
+                }
+            ],
+            components: {
+                securitySchemes: {
+                    bearerAuth: {
+                        type: 'http',
+                        scheme: 'bearer',
+                        bearerFormat: 'JWT'
+                    }
+                }
+            },
+        },
+        transform: jsonSchemaTransform
+    })
+
+    await server.register(import('@fastify/swagger-ui'), {
+        routePrefix: '/docs',
+        uiConfig: {
+            docExpansion: 'list',
+            deepLinking: false
+        },
+        uiHooks: {
+            onRequest: function (request, reply, next) { next() },
+            preHandler: function (request, reply, next) { next() }
+        },
+        staticCSP: true,
+        transformStaticCSP: (header) => header,
+        transformSpecification: (swaggerObject, request, reply) => { return swaggerObject },
+        transformSpecificationClone: true
+    })
 
     //register
     server.register(cors, {
@@ -55,11 +104,9 @@ async function start() {
     server.register(fastifyJwt, { secret: "supersecret" })
 
     // register route
-    server.register(AuthRoutes, {prefix:"/api/auth"})
+    server.register(AuthRoutes, { prefix: "/api/auth" })
     server.register(catalogRouteUser, { prefix: "/api/catalog" })
     server.register(catalogRouteAdmin, { prefix: "/api/admin/catalog" })
-    
-
 
     //fastify listen
     server.listen({

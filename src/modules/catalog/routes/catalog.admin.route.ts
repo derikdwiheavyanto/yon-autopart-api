@@ -10,11 +10,31 @@ import { authMiddleware } from "../../../middleware/auth.middleware";
  */
 async function catalogRouteAdmin(server: FastifyInstance) {
     server.addHook('onRequest', authMiddleware)
-    server.get('/', catalogController.getAllCatalog)
-    server.get('/:id', catalogController.getCatalogById)
-    server.post('/', catalogController.createCatalog)
-    server.patch('/:id', catalogController.updateCatalog)
-    server.delete('/:id', catalogController.deleteCatalog)
+    server.get('/', {
+        schema: {
+            security: [{ bearerAuth: [] }]
+        }
+    }, catalogController.getAllCatalog)
+    server.get('/:id', {
+        schema: {
+            security: [{ bearerAuth: [] }]
+        }
+    }, catalogController.getCatalogById)
+    server.post('/', {
+        schema: {
+            security: [{ bearerAuth: [] }]
+        }
+    }, catalogController.createCatalog)
+    server.patch('/:id', {
+        schema: {
+            security: [{ bearerAuth: [] }]
+        }
+    }, catalogController.updateCatalog)
+    server.delete('/:id', {
+        schema: {
+            security: [{ bearerAuth: [] }]
+        }
+    }, catalogController.deleteCatalog)
 }
 
 export default catalogRouteAdmin

@@ -3,19 +3,19 @@ import { LoginInput, RegisterInput } from "./auth.schema"
 import bcrypt from "bcrypt"
 import { UnauthorizedError } from "../../errors/UnautorizedError"
 import fastify from "fastify"
+import { AlreadyUserError } from "../../errors/AlreadyUsersError"
 
 
 async function login(input: LoginInput) {
     const user = await AuthRepository.findByEmail(input.email)
     if (!user) {
-        throw new UnauthorizedError()
+        throw new UnauthorizedError("Email atau password salah")
     }
 
     const verifyPassword = await bcrypt.compare(input.password, user.password)
     if (!verifyPassword) {
-        throw new UnauthorizedError()
+        throw new UnauthorizedError("Email atau password salah")
     }
-
 
     return {
         id: user.id,
@@ -27,6 +27,8 @@ async function login(input: LoginInput) {
 }
 
 async function register(input: RegisterInput) {
+    if (await AuthRepository.findByEmail(input.email)) { throw new AlreadyUserError() }
+
     const saltRound = 10
     const password = input.password
     const hash = await bcrypt.hash(password, saltRound)
