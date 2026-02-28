@@ -13,6 +13,15 @@ datasource db {
   provider = "postgresql"
 }
 
+model user {
+  id       Int     @id @default(autoincrement())
+  name     String  @db.VarChar(50)
+  email    String  @unique @db.VarChar(50)
+  password String 
+  age      Int     @db.Integer
+  address  String? @db.VarChar(100)
+}
+
 model Catalog {
   id          Int    @id @default(autoincrement())
   title       String @db.VarChar(50)

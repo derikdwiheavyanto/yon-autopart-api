@@ -1,7 +1,29 @@
+
+#AUTH
+###Login
+POST http://localhost:3333/api/auth/login
+Content-Type: application/json
+
+{
+  "email":"derik@gmail.com",
+  "password":"derik"
+}
+
+###Register
+POST http://localhost:3333/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "derik",
+  "email":"derikkk@gmail.com",
+  "password":"derik",
+  "age": 22,
+  "address": "Besuki Tulungagung"
+}
+
 # USER
 ### Get Catalog
 GET http://localhost:3333/api/catalog
-
 
 
 # ADMIN
@@ -11,7 +33,6 @@ GET http://localhost:3333/api/admin/catalog
 
 ### Get Catalog id
 GET http://localhost:3333/api/admin/catalog/1
-
 
 ### Create Catalog Succes
 POST http://localhost:3333/api/admin/catalog
@@ -43,4 +64,4 @@ Content-Type: application/json
 }
 
 ### Delete Catalog
-DELETE  http://localhost:3333/api/admin/catalog/1
+DELETE  http://localhost:3333/api/admin/catalog/2

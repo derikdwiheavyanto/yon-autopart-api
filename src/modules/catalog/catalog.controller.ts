@@ -13,7 +13,7 @@ import { responseFormater } from "../../../utils/response";
  * console.log(catalog)
  */
 async function getAllCatalog(request: FastifyRequest, reply: FastifyReply) {
-
+    
     const catalog = await catalogService.getAllCatalog()
     return reply.code(200).send(responseFormater(200, 'success', catalog))
 
@@ -35,7 +35,7 @@ async function getCatalogById(request: FastifyRequest<{ Params: { id: string } }
     if (!catalog) {
         return reply.code(404).send(responseFormater(404, 'error', "Id tidak ditemukan"))
     }
-    return reply.code(200).send(responseFormater(200, 'success', catalog))
+    return reply.code(200).send(responseFormater(201, 'success', catalog))
 
 }
 
@@ -54,20 +54,44 @@ async function createCatalog(request: FastifyRequest<{ Body: CreateCatalogInput 
     const body = createCatalogSchema.parse(request.body)
     const catalog = await catalogService.createCatalog(body)
 
-    return reply.code(201).send(catalog)
+    return reply.code(201).send(responseFormater(200, "success", catalog))
 
 }
 
+/**
+ * Update a catalog by its ID.
+ * @param {FastifyRequest<{ Params: { id: string }, Body: UpdateCatalogInput }>} request - The request object of Fastify.
+ * @param {FastifyReply} reply - The response object of Fastify.
+ * @returns {Promise<FastifyReply>} a promise containing the response of the API.
+ * @example
+ * const response = await updateCatalog(request, reply)
+ * const catalog = response.body
+ * console.log(catalog)
+ */
 async function updateCatalog(request: FastifyRequest<{ Params: { id: string }, Body: UpdateCatalogInput }>, reply: FastifyReply,) {
 
     const id = Number(request.params.id)
     const body = request.body
-    const catalog = await catalogService.updateCatalog({ id: id, input: body })
+    const result = await catalogService.updateCatalog({ id: id, input: body })
 
-    return reply.code(200).send(responseFormater(200, "success", catalog))
+    if (!result) {
+        return reply.code(404).send(responseFormater(404, "error", "Id tidak ditemukan"))
+    }
+
+    return reply.code(200).send(responseFormater(200, "success", result))
 
 }
 
+/**
+ * Hapus catalog berdas id yang diberikan.
+ * @param {FastifyRequest<{ Params: { id: string } >} request - The request object of Fastify.
+ * @param {FastifyReply} reply - The response object of Fastify.
+ * @returns {Promise<FastifyReply>} a promise containing the response of the API.
+ * @example
+ * const response = await deleteCatalog(request, reply)
+ * const message = response.body
+ * console.log(message)
+ */
 async function deleteCatalog(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     const id = Number(request.params.id)
     const result = await catalogService.deleteCatalog(id)
@@ -82,5 +106,5 @@ async function deleteCatalog(request: FastifyRequest<{ Params: { id: string } }>
 
 
 export const catalogController = {
-    createCatalog, getAllCatalog,getCatalogById, updateCatalog, deleteCatalog
+    createCatalog, getAllCatalog, getCatalogById, updateCatalog, deleteCatalog
 }

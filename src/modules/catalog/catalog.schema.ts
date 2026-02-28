@@ -14,8 +14,9 @@ export const createCatalogSchema = z.object({
 })
 
 export const UpdateCatalogSchema = createCatalogSchema.partial()
-
-
+export const ResponseCatalogSchema = z.object({
+    ...coreCatalogSchema
+})
 
 export type UpdateCatalogInput = z.infer<typeof UpdateCatalogSchema>
 export type CreateCatalogInput = z.infer<typeof createCatalogSchema>

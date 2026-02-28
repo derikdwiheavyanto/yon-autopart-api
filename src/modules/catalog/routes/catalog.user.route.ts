@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { catalogController } from "./catalog.controller";
+import { catalogController } from "../catalog.controller";
 
 
 async function catalogRouteUser(server: FastifyInstance) {
