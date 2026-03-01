@@ -8,7 +8,7 @@ import z from "zod";
 
 async function catalogRouteUser(server: FastifyInstance) {
     const tags = "Public"
-    server.get('/', {
+    server.get('/catalog', {
         schema: buildSchema({
             tags: [tags],
             summary: "Get ALl Catalog",

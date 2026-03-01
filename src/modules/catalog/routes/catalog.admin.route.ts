@@ -15,7 +15,6 @@ import z, { xid } from "zod";
 async function catalogRouteAdmin(server: FastifyInstance) {
     const tags = "Admin"
 
-    server.addHook('onRequest', authMiddleware)
     server.get('/', {
         schema: buildSchema({
             tags: [tags],
@@ -46,6 +45,7 @@ async function catalogRouteAdmin(server: FastifyInstance) {
             }
         })
     }, catalogController.createCatalog)
+
     server.patch('/:id', {
         schema: buildSchema({
             tags: [tags],
@@ -56,6 +56,7 @@ async function catalogRouteAdmin(server: FastifyInstance) {
             }
         })
     }, catalogController.updateCatalog)
+
     server.delete('/:id', {
         schema: buildSchema({
             tags: [tags],
