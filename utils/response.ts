@@ -41,14 +41,29 @@ function responseErrorSchema(
     })
 }
 
-function zodErrorFormater(error: ZodError): { statusCode: number, errorFormat: {} } {
-    const flaten = z.flattenError(error)
-    const fieldError = flaten.fieldErrors
+function zodErrorFormater(error: any): { statusCode: number, errorFormat: {} } {
+    const formatted: Record<string, string[]> = {}
 
+    if (!error.validation) {
+        return {
+            statusCode: 500,
+            errorFormat: errorFormater(500, "Internal Server Error", "Unknown validation error")
+        }
+    }
+
+    for (const err of error.validation) {
+        const field = err.instancePath.replace("/", "")
+
+        if (!formatted[field]) {
+            formatted[field] = []
+        }
+
+        formatted[field].push(err.message ?? "")
+    }
 
     return {
         statusCode: 400,
-        errorFormat: errorFormater(400, "bad request", fieldError)
+        errorFormat: errorFormater(400, "Bad Request", formatted)
     }
 }
 

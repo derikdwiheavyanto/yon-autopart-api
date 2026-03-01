@@ -1,0 +1,38 @@
+
+
+import dotenv from 'dotenv'
+import { buildApp } from './app'
+import swagger from './config/swagger'
+import registerPlugins from './plugins'
+import registerRoute from './routes'
+import registerHooks from './hooks/register_hooks'
+dotenv.config()
+
+
+
+
+
+
+
+async function start() {
+    // dont change this code
+    const app = buildApp()
+    await registerPlugins(app)
+    await swagger(app)
+    await registerHooks(app)
+    await registerRoute(app)
+    // 
+    
+    //fastify listen
+    app.listen({
+        port: Number(process.env.PORT) || 3333,
+        host: process.env.HOST || "0.0.0.0"
+    }, function (err, address) {
+        if (err) {
+            app.log.error(err)
+            process.exit(1)
+        }
+    })
+}
+
+start()

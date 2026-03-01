@@ -41,8 +41,7 @@ Content-Type: application/json
 {
   "title": "Velg Racing R15",
   "image": "https://example.com/velg.jpg",
-  "price": 2000,
-  "description": "Barang langka berkualitas gampang rusak"
+  "price": 2000
 }
 
 ### Create Catalog Failed

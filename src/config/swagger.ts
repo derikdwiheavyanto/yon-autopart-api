@@ -1,0 +1,50 @@
+import fastifySwagger from "@fastify/swagger";
+import { FastifyInstance } from "fastify";
+import { jsonSchemaTransform } from "fastify-type-provider-zod";
+import { AppInstance } from "../app";
+
+
+export default async function swagger(server: AppInstance) {
+    await server.register(fastifySwagger, {
+        openapi: {
+            openapi: '3.0.0',
+            info: {
+                title: 'Yon Auto-Part API DOCS',
+                description: 'Documentation API for Yon Auto-Part APP ',
+                version: '0.1.0'
+            },
+            servers: [
+                {
+                    url: 'http://192.168.1.10:3333/',
+                    description: 'Development server'
+                },
+            ],
+            components: {
+                securitySchemes: {
+                    bearerAuth: {
+                        type: 'http',
+                        scheme: 'bearer',
+                        bearerFormat: 'JWT'
+                    }
+                }
+            },
+        },
+        transform: jsonSchemaTransform
+    })
+
+    await server.register(import('@fastify/swagger-ui'), {
+        routePrefix: '/docs',
+        uiConfig: {
+            docExpansion: 'list',
+            deepLinking: false
+        },
+        uiHooks: {
+            onRequest: function (request, reply, next) { next() },
+            preHandler: function (request, reply, next) { next() }
+        },
+        staticCSP: false,
+        transformStaticCSP: (header) => header,
+        transformSpecification: (swaggerObject, request, reply) => { return swaggerObject },
+        transformSpecificationClone: true
+    })
+}

@@ -1,13 +1,12 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
-import { errorFormater, zodErrorFormater } from "../../utils/response";
+import { errorFormater, zodErrorFormater } from "../../../utils/response";
 import dotenv from 'dotenv'
-import { ZodError } from "zod";
-import { onErrorLogging } from "../hook/logger";
-import { AppError } from "../errors/AppError"
+import { onErrorLogging } from "../../hooks/logger";
+import { AppError } from "../AppError"
 dotenv.config()
 
 
-function zodErrorHandler(error: FastifyError & ZodError, request: FastifyRequest, reply: FastifyReply) {
+function zodErrorHandler(error: FastifyError, request: FastifyRequest, reply: FastifyReply) {
     const { statusCode, errorFormat } = zodErrorFormater(error)
     reply.code(statusCode).send(errorFormat)
     error.statusCode = 400
@@ -21,7 +20,7 @@ async function errorHandler(error: FastifyError, request: FastifyRequest, reply:
     const typeError = showsError ? error.name : "Internal Server Error"
     const message = showsError ? error.message : "Mohon maaf terjadi kesalahan "
 
-    if (error instanceof ZodError) {
+    if ((error as any).code === "FST_ERR_VALIDATION") {
         return zodErrorHandler(error, request, reply)
     }
 
