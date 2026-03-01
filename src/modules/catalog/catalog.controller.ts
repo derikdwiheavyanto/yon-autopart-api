@@ -1,8 +1,7 @@
-import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
-import { CreateCatalogInput, createCatalogSchema, UpdateCatalogInput } from "./catalog.schema";
+import {  FastifyReply, FastifyRequest } from "fastify";
+import { CreateCatalogInput, UpdateCatalogInput } from "./catalog.schema";
 import catalogService from "./catalog.service";
 import { responseFormater } from "../../../utils/response";
-import { pipeline } from "node:stream/promises";
 import fs from "node:fs"
 
 
@@ -60,9 +59,12 @@ async function createCatalog(request: FastifyRequest<{ Body: CreateCatalogInput 
     for (const image of images) {
         const fileName = `${Date.now()}-${image.filename}`
 
-        await pipeline(
-            image.file,
-            fs.createWriteStream(`./uploads/${fileName}`)
+
+        const buffer = await image.toBuffer()
+
+        await fs.promises.writeFile(
+            `./uploads/${fileName}`,
+            buffer
         )
 
         savedImages.push(`/uploads/${fileName}`)
