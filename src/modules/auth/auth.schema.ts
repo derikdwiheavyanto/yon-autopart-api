@@ -53,6 +53,7 @@ export const LoginResponseSchema = z.object({
     token: z.string()
 }).meta({
     example: {
+        id:1,
         ...BaseAuthResponseExample,
         token: "token"
 

@@ -62,9 +62,9 @@ async function start() {
             },
             servers: [
                 {
-                    url: 'http://localhost:3333',
+                    url: '/',
                     description: 'Development server'
-                }
+                },
             ],
             components: {
                 securitySchemes: {
@@ -89,7 +89,7 @@ async function start() {
             onRequest: function (request, reply, next) { next() },
             preHandler: function (request, reply, next) { next() }
         },
-        staticCSP: true,
+        staticCSP: false,
         transformStaticCSP: (header) => header,
         transformSpecification: (swaggerObject, request, reply) => { return swaggerObject },
         transformSpecificationClone: true

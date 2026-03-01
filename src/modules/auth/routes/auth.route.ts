@@ -14,6 +14,7 @@ async function AuthRoutes(server: FastifyInstance) {
         schema: buildSchema({
             tags: [tags],
             summary: "Login User",
+            security: false,
             body: LoginInputSchema,
             response: {
                 200: responseSchema(200, "success", LoginResponseSchema,),
@@ -27,6 +28,7 @@ async function AuthRoutes(server: FastifyInstance) {
         schema: buildSchema({
             tags: [tags],
             summary: "Register User",
+            security: false,
             body: RegisterInputSchema,
             response: { 201: responseSchema(201, "success", RegisterResponseSchema) }
         })
