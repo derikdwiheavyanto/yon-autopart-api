@@ -41,11 +41,8 @@ build/Release
 node_modules/
 jspm_packages/
 /src/generated/prisma
-
 /generated/prisma
-
 /generated/prisma
-
 /generated/prisma
 
 
@@ -150,3 +147,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# folder
+uploads
