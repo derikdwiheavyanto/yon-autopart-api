@@ -149,4 +149,4 @@ vite.config.ts.timestamp-*
 .vite/
 
 # folder
-uploads
+uploads/*
