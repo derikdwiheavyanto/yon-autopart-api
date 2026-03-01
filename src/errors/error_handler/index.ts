@@ -1,9 +1,8 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
-import { errorFormater, zodErrorFormater } from "../../utils/response";
+import { errorFormater, zodErrorFormater } from "../../../utils/response";
 import dotenv from 'dotenv'
-import { ZodError } from "zod";
-import { onErrorLogging } from "../hook/logger";
-import { AppError } from "../errors/AppError"
+import { onErrorLogging } from "../../hooks/logger";
+import { AppError } from "../AppError"
 dotenv.config()
 
 
