@@ -1,7 +1,10 @@
-import { FastifyInstance } from 'fastify'
+import fp from 'fastify-plugin'
 import { AppInstance } from '../app'
 
-export default async function requestDecorator(app: AppInstance) {
-    app.decorateRequest('startTime', 0)
-    app.decorateRequest('isError', false)
-}
+
+
+export default fp(async function(server) {
+    server.decorateRequest('startTime', 0)
+    server.decorateRequest('isError', false)
+})
+

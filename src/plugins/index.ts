@@ -1,16 +1,12 @@
-import { FastifyInstance } from "fastify";
-import cors from "@fastify/cors"
-import fastifyJwt from "@fastify/jwt";
 import requestDecorator from "./request_decorator";
 import { AppInstance } from "../app";
+import corsPlugin from "./cors"
+import jwt from "./jwt";
 
 
 export default async function registerPlugins(server: AppInstance) {
-    await requestDecorator(server)
+    await server.register(requestDecorator)
 
-    await server.register(cors, {
-        origin: '*',
-        methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-    })
-    await server.register(fastifyJwt, { secret: "supersecret" })
+    await server.register(corsPlugin)
+    await server.register(jwt)
 }
