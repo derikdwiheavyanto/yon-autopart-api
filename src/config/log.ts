@@ -9,7 +9,7 @@ export const log = pino({
             colorize: true,
             translateTime: "HH:MM:ss",
             ignore: "pid,hostname,reqId",
-            singleLine: true
+            singleLine: false
         }
     }
 })

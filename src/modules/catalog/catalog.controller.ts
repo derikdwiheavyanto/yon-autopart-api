@@ -2,6 +2,8 @@ import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import { CreateCatalogInput, createCatalogSchema, UpdateCatalogInput } from "./catalog.schema";
 import catalogService from "./catalog.service";
 import { responseFormater } from "../../../utils/response";
+import { pipeline } from "node:stream/promises";
+import fs from "node:fs"
 
 
 /**
@@ -13,8 +15,9 @@ import { responseFormater } from "../../../utils/response";
  * console.log(catalog)
  */
 async function getAllCatalog(request: FastifyRequest, reply: FastifyReply) {
-    
+
     const catalog = await catalogService.getAllCatalog()
+    request.log.debug(catalog)
     return reply.code(200).send(responseFormater(200, 'success', catalog))
 
 }
@@ -50,9 +53,28 @@ async function getCatalogById(request: FastifyRequest<{ Params: { id: string } }
  * console.log(catalog)
  */
 async function createCatalog(request: FastifyRequest<{ Body: CreateCatalogInput }>, reply: FastifyReply) {
+    const { images, ...data } = request.body
 
-    const body = createCatalogSchema.parse(request.body)
-    const catalog = await catalogService.createCatalog(body)
+    const savedImages: string[] = []
+
+    for (const image of images) {
+        const fileName = `${Date.now()}-${image.filename}`
+
+        await pipeline(
+            image.file,
+            fs.createWriteStream(`./uploads/${fileName}`)
+        )
+
+        savedImages.push(`/uploads/${fileName}`)
+    }
+
+    const input = {
+        ...data,
+        images: savedImages
+    }
+
+    request.log.debug(input)
+    const catalog = await catalogService.createCatalog(input)
 
     return reply.code(201).send(responseFormater(200, "success", catalog))
 

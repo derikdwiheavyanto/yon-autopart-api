@@ -2,9 +2,10 @@ import fastifySwagger from "@fastify/swagger";
 import { FastifyInstance } from "fastify";
 import { jsonSchemaTransform } from "fastify-type-provider-zod";
 import { AppInstance } from "../app";
+import fp from "fastify-plugin";
 
 
-export default async function swagger(server: AppInstance) {
+export default fp(async function (server) {
     await server.register(fastifySwagger, {
         openapi: {
             openapi: '3.0.0',
@@ -47,4 +48,5 @@ export default async function swagger(server: AppInstance) {
         transformSpecification: (swaggerObject, request, reply) => { return swaggerObject },
         transformSpecificationClone: true
     })
-}
+
+})

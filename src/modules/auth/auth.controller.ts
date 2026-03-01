@@ -1,18 +1,17 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { LoginInputSchema, RegisterInputSchema } from "./auth.schema";
+import { LoginInput, LoginInputSchema, RegisterInput, RegisterInputSchema } from "./auth.schema";
 import AuthService from "./auth.service";
 import { responseFormater } from "../../../utils/response";
 
 
 
-async function login(request: FastifyRequest, reply: FastifyReply) {
-    const body = LoginInputSchema.parse(request.body)
-    const user = await AuthService.login(body)
+async function login(request: FastifyRequest<{Body:LoginInput}>, reply: FastifyReply) {
+    const user = await AuthService.login(request.body)
 
     const payload = { id: user.id }
     const token = await reply.jwtSign(payload, {
         sign: {
-            expiresIn: '10m'
+            expiresIn: '1D'
         }
     })
 
@@ -27,9 +26,8 @@ async function login(request: FastifyRequest, reply: FastifyReply) {
     )
 }
 
-async function register(request: FastifyRequest, reply: FastifyReply) {
-    const body = RegisterInputSchema.parse(request.body)
-    const user = await AuthService.register(body)
+async function register(request: FastifyRequest<{Body: RegisterInput}>, reply: FastifyReply) {
+    const user = await AuthService.register(request.body)
 
     return reply.code(200).send(responseFormater(200, "success", user))
 

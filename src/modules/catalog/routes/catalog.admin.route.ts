@@ -35,26 +35,33 @@ async function catalogRouteAdmin(server: FastifyInstance) {
         })
     }, catalogController.getCatalogById)
 
+    
     server.post('/', {
-        schema: buildSchema({
-            tags: [tags],
-            summary: "Create Catalog",
-            body: createCatalogSchema,
-            response: {
-                200: responseSchema(200, "success", ResponseCatalogSchema),
-            }
-        })
+        schema: {
+            consumes: ['multipart/form-data'],
+            ...buildSchema({
+                tags: [tags],
+                summary: "Create Catalog",
+                body: createCatalogSchema,
+                response: {
+                    200: responseSchema(200, "success", ResponseCatalogSchema),
+                }
+            }),
+        }
     }, catalogController.createCatalog)
 
     server.patch('/:id', {
-        schema: buildSchema({
-            tags: [tags],
-            summary: "Update Catalog",
-            body: UpdateCatalogSchema,
-            response: {
-                200: responseSchema(200, "success", ResponseCatalogSchema),
-            }
-        })
+        schema: {
+            consumes: ['multipart/form-data'],
+            ...buildSchema({
+                tags: [tags],
+                summary: "Update Catalog",
+                body: UpdateCatalogSchema,
+                response: {
+                    200: responseSchema(200, "success", ResponseCatalogSchema),
+                }
+            })
+        }
     }, catalogController.updateCatalog)
 
     server.delete('/:id', {
@@ -62,7 +69,7 @@ async function catalogRouteAdmin(server: FastifyInstance) {
             tags: [tags],
             summary: "Delete Catalog",
             response: {
-                200: responseSchema(200, "success", z.string().meta({example:"Catalog berhasil dihapus"})),
+                200: responseSchema(200, "success", z.string().meta({ example: "Catalog berhasil dihapus" })),
             }
         })
     }, catalogController.deleteCatalog)

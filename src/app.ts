@@ -10,6 +10,9 @@ export function buildApp() {
     const server = fastify({
         loggerInstance: isProduction ? undefined : log,
         disableRequestLogging: true,
+        ajv: {
+            plugins: [require("@fastify/multipart").ajvFilePlugin]
+        }
     }).withTypeProvider<ZodTypeProvider>()
 
     server.setValidatorCompiler(validatorCompiler)

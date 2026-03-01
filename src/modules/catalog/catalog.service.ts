@@ -17,7 +17,8 @@ async function getCatalogById(id: number) {
     return await catalogRepository.getCatalogById(id)
 }
 
-async function createCatalog(input: CreateCatalogInput) {
+async function createCatalog(input: any) {
+
     return await catalogRepository.createCatalog(input)
 }
 

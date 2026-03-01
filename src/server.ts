@@ -2,7 +2,7 @@
 
 import dotenv from 'dotenv'
 import { buildApp } from './app'
-import swagger from './config/swagger'
+import swagger from './plugins/swagger'
 import registerPlugins from './plugins'
 import registerRoute from './routes'
 import registerHooks from './hooks/register_hooks'
@@ -18,7 +18,6 @@ async function start() {
     // dont change this code
     const app = buildApp()
     await registerPlugins(app)
-    await swagger(app)
     await registerHooks(app)
     await registerRoute(app)
     // 
