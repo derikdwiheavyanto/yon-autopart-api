@@ -115,7 +115,7 @@ async function deleteCatalog(request: FastifyRequest<{ Params: { id: string } }>
         const images = result.images
         if (images) {
             for (const image of images) {
-                const filePath = `${image.url}`
+                const filePath = `.${image.url}`
                 await fs.rm(filePath)
             }
         }
