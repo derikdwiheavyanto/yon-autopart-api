@@ -1,8 +1,9 @@
 import pino from "pino";
+import { config } from ".";
 
 
 export const log = pino({
-    level: "debug",
+    level: config.isProduction ? "info" : "debug",
     transport: {
         target: "pino-pretty",
         options: {
