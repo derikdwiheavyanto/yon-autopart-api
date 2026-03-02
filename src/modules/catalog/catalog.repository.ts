@@ -47,7 +47,8 @@ export async function deleteCatalog(id: number) {
     return await prisma.catalog.delete({
         where: {
             id: id
-        }
+        },
+        include: { images: true},
     })
 
 

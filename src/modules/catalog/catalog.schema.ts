@@ -24,13 +24,13 @@ const { images, ...corewithoutImage } = coreCatalogSchema
 const imageValidation = z
     .custom<MultipartFile>()
     .refine((file) => file?.file, {
-        error: 'The image is required.',
+        message: 'The image is required.',
     })
     .refine((file) => !file || file.file?.bytesRead <= 10 * 1024 * 1024, {
-        error: 'The image must be a maximum of 10MB.',
+        message: 'The image must be a maximum of 10MB.',
     })
     .refine((file) => !file || file.mimetype.startsWith('image'), {
-        error: 'Only images are allowed to be sent.',
+        message: 'Only images are allowed to be sent.',
     })
 
 export const createCatalogSchema = z.object({
@@ -44,7 +44,7 @@ export const createCatalogSchema = z.object({
                 type: "string",
                 format: "binary"
             })
-        )
+        ).min(1,"Minimal 1 gambar harus diupload")
     ),
 
     title: z.preprocess(

@@ -1,8 +1,10 @@
-import {  FastifyReply, FastifyRequest } from "fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
 import { CreateCatalogInput, UpdateCatalogInput } from "./catalog.schema";
 import catalogService from "./catalog.service";
 import { responseFormater } from "../../../utils/response";
-import fs from "node:fs"
+import fs from "fs/promises"
+import { pipeline } from "stream/promises";
+import { MultipartFile } from "@fastify/multipart";
 
 
 /**
@@ -52,26 +54,12 @@ async function getCatalogById(request: FastifyRequest<{ Params: { id: string } }
  * console.log(catalog)
  */
 async function createCatalog(request: FastifyRequest<{ Body: CreateCatalogInput }>, reply: FastifyReply) {
-    const { images, ...data } = request.body
+    const { images, ...otherField } = request.body
 
-    const savedImages: string[] = []
-
-    for (const image of images) {
-        const fileName = `${Date.now()}-${image.filename}`
-
-
-        const buffer = await image.toBuffer()
-
-        await fs.promises.writeFile(
-            `./uploads/${fileName}`,
-            buffer
-        )
-
-        savedImages.push(`/uploads/${fileName}`)
-    }
+    const savedImages: MultipartFile[] = images.map((img: any) => img.savedPath);
 
     const input = {
-        ...data,
+        ...otherField,
         images: savedImages
     }
 
@@ -118,10 +106,23 @@ async function updateCatalog(request: FastifyRequest<{ Params: { id: string }, B
  */
 async function deleteCatalog(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     const id = Number(request.params.id)
+    
     const result = await catalogService.deleteCatalog(id)
-
     if (!result) {
         return reply.code(404).send(responseFormater(404, "error", "Id tidak ditemukan"))
+    }
+
+    try {
+        const images = result.images
+        if (images) {
+            for (const image of images) {
+                const filePath = `.${image.url}`
+                await fs.rm(filePath)
+            }
+        }
+    } catch (error) {
+        request.log.error(error)
+        throw error
     }
 
     return reply.code(200).send(responseFormater(200, "success", "Catalog berhasil dihapus"))

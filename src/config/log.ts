@@ -1,4 +1,6 @@
+import { time } from "node:console";
 import pino from "pino";
+import { any } from "zod";
 
 
 export const log = pino({
@@ -7,9 +9,10 @@ export const log = pino({
         target: "pino-pretty",
         options: {
             colorize: true,
-            translateTime: "HH:MM:ss",
+            translateTime: "SYS:yyyy-mm-dd HH:MM:ss",
             ignore: "pid,hostname,reqId",
-            singleLine: false
-        }
+            singleLine: false,
+        },
+
     }
 })

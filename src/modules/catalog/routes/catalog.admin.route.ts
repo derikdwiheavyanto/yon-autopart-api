@@ -1,10 +1,9 @@
 import { FastifyInstance } from "fastify";
 import { catalogController } from "../catalog.controller";
-import { authMiddleware } from "../../../middleware/auth.middleware";
 import { buildSchema } from "../../../../utils/build_scema";
 import { responseSchema } from "../../../../utils/response";
 import { createCatalogSchema, ResponseCatalogSchema, UpdateCatalogSchema } from "../catalog.schema";
-import z, { xid } from "zod";
+import z from "zod";
 
 
 /**
@@ -39,6 +38,7 @@ async function catalogRouteAdmin(server: FastifyInstance) {
     server.post('/', {
         schema: {
             consumes: ['multipart/form-data'],
+            // deprecated: true,
             ...buildSchema({
                 tags: [tags],
                 summary: "Create Catalog",
@@ -53,9 +53,10 @@ async function catalogRouteAdmin(server: FastifyInstance) {
     server.patch('/:id', {
         schema: {
             consumes: ['multipart/form-data'],
+            deprecated: true,
             ...buildSchema({
                 tags: [tags],
-                summary: "Update Catalog",
+                summary: "IKI Yo RAKENEK",
                 body: UpdateCatalogSchema,
                 response: {
                     200: responseSchema(200, "success", ResponseCatalogSchema),
