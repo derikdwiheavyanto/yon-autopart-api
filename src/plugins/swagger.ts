@@ -1,7 +1,5 @@
 import fastifySwagger from "@fastify/swagger";
-import { FastifyInstance } from "fastify";
 import { jsonSchemaTransform } from "fastify-type-provider-zod";
-import { AppInstance } from "../app";
 import fp from "fastify-plugin";
 
 

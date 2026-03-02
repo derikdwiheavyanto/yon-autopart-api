@@ -2,17 +2,10 @@
 
 import dotenv from 'dotenv'
 import { buildApp } from './app'
-import swagger from './plugins/swagger'
 import registerPlugins from './plugins'
 import registerRoute from './routes'
 import registerHooks from './hooks/register_hooks'
 dotenv.config()
-
-
-
-
-
-
 
 async function start() {
     // dont change this code
@@ -21,7 +14,7 @@ async function start() {
     await registerHooks(app)
     await registerRoute(app)
     // 
-    
+
     //fastify listen
     app.listen({
         port: Number(process.env.PORT) || 3333,

@@ -1,5 +1,4 @@
 import fp from 'fastify-plugin'
-import { AppInstance } from '../app'
 
 
 
