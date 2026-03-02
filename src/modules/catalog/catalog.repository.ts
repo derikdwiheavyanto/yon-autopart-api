@@ -1,5 +1,4 @@
 import { prisma } from "../../db/prisma"
-import { CreateCatalogInput, UpdateCatalogInput } from "./catalog.schema"
 
 
 export async function findAll() {

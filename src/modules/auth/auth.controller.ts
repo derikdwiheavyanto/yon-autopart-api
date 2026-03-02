@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { LoginInput, LoginInputSchema, RegisterInput, RegisterInputSchema } from "./auth.schema";
+import { LoginInput, RegisterInput } from "./auth.schema";
 import AuthService from "./auth.service";
 import { responseFormater } from "../../../utils/response";
 

@@ -3,7 +3,6 @@ import { CreateCatalogInput, UpdateCatalogInput } from "./catalog.schema";
 import catalogService from "./catalog.service";
 import { responseFormater } from "../../../utils/response";
 import fs from "fs/promises"
-import { pipeline } from "stream/promises";
 import { MultipartFile } from "@fastify/multipart";
 
 

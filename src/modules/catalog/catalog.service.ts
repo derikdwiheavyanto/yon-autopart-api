@@ -1,5 +1,5 @@
 import * as catalogRepository from "./catalog.repository";
-import { CreateCatalogInput, UpdateCatalogInput } from "./catalog.schema";
+import { UpdateCatalogInput } from "./catalog.schema";
 
 
 async function isIdAvailable(id: number) {
