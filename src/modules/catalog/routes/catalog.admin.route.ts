@@ -4,6 +4,7 @@ import { buildSchema } from "../../../../utils/build_scema";
 import { responseSchema } from "../../../../utils/response";
 import { createCatalogSchema, ResponseCatalogSchema, UpdateCatalogSchema } from "../catalog.schema";
 import z from "zod";
+import { uploadMiddleware } from "../../../middleware/upload.middleware";
 
 
 /**
@@ -22,6 +23,7 @@ async function catalogRouteAdmin(server: FastifyInstance) {
                 200: responseSchema(200, "success", z.array(ResponseCatalogSchema)),
             }
         })
+        
     }, catalogController.getAllCatalog)
 
     server.get('/:id', {
@@ -34,8 +36,9 @@ async function catalogRouteAdmin(server: FastifyInstance) {
         })
     }, catalogController.getCatalogById)
 
-    
+
     server.post('/', {
+        preHandler: uploadMiddleware,
         schema: {
             consumes: ['multipart/form-data'],
             // deprecated: true,

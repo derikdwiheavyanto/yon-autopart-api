@@ -34,18 +34,6 @@ const imageValidation = z
     })
 
 export const createCatalogSchema = z.object({
-    images: z.preprocess(
-        (val) => {
-            if (!val) return []
-            return Array.isArray(val) ? val : [val]
-        },
-        z.array(
-            imageValidation.meta({
-                type: "string",
-                format: "binary"
-            })
-        ).min(1,"Minimal 1 gambar harus diupload")
-    ),
 
     title: z.preprocess(
         (val) => (val as MultipartValue)?.value,
@@ -62,6 +50,18 @@ export const createCatalogSchema = z.object({
         (val) => (val as MultipartValue)?.value,
         corewithoutImage.description /* validation here */
     ),
+    images: z.preprocess(
+        (val) => {
+            if (!val) return []
+            return Array.isArray(val) ? val : [val]
+        },
+        z.array(
+            imageValidation.meta({
+                type: "string",
+                format: "binary"
+            })
+        ).min(1, "Minimal 1 gambar harus diupload")
+    )
 })
 
 

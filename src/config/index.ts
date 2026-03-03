@@ -14,7 +14,16 @@ const envSchema = z.object({
 
     JWT_SECRET: z.string(),
 
-    CORS_ORIGIN: z.string().optional(),
+    CORS_ORIGIN: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (!val || val.trim() === "") return []
+            return val
+                .split(",")
+                .map(v => v.trim())
+                .filter(v => v.length > 0)
+        }),
 
     CORS_METHODS: z
         .string()

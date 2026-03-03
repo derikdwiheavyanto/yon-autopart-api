@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { CreateCatalogInput, UpdateCatalogInput } from "./catalog.schema";
+import { UpdateCatalogInput } from "./catalog.schema";
 import catalogService from "./catalog.service";
 import { responseFormater } from "../../../utils/response";
 import fs from "fs/promises"
-import { MultipartFile } from "@fastify/multipart";
+import { IInputUpload } from "../../middleware/upload.middleware";
 
 
 /**
@@ -52,20 +52,28 @@ async function getCatalogById(request: FastifyRequest<{ Params: { id: string } }
  * const catalog = response.body
  * console.log(catalog)
  */
-async function createCatalog(request: FastifyRequest<{ Body: CreateCatalogInput }>, reply: FastifyReply) {
-    const { images, ...otherField } = request.body
+async function createCatalog(request: FastifyRequest, reply: FastifyReply) {
+    const { images, ...otherField } = request.getDecorator<IInputUpload>('inputUploads')
+    try {
 
-    const savedImages: MultipartFile[] = images.map((img: any) => img.savedPath);
+        const savedImages: string[] = images.map((img) => img);
 
-    const input = {
-        ...otherField,
-        images: savedImages
+        const input = {
+            ...otherField,
+            images: savedImages
+        }
+
+        request.log.debug(input)
+        const catalog = await catalogService.createCatalog(input)
+
+        return reply.code(201).send(responseFormater(200, "success", catalog))
+    } catch (error) {
+        for (const image of images) {
+            await fs.unlink(`.${image}`)
+            request.log.error(`ROLLBACK FILE: ${image}`)
+        }
+        throw error
     }
-
-    request.log.debug(input)
-    const catalog = await catalogService.createCatalog(input)
-
-    return reply.code(201).send(responseFormater(200, "success", catalog))
 
 }
 
@@ -105,7 +113,7 @@ async function updateCatalog(request: FastifyRequest<{ Params: { id: string }, B
  */
 async function deleteCatalog(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     const id = Number(request.params.id)
-    
+
     const result = await catalogService.deleteCatalog(id)
     if (!result) {
         return reply.code(404).send(responseFormater(404, "error", "Id tidak ditemukan"))
@@ -116,7 +124,7 @@ async function deleteCatalog(request: FastifyRequest<{ Params: { id: string } }>
         if (images) {
             for (const image of images) {
                 const filePath = `.${image.url}`
-                await fs.rm(filePath)
+                await fs.unlink(filePath)
             }
         }
     } catch (error) {

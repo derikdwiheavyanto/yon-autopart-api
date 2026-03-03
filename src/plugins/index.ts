@@ -1,4 +1,4 @@
-import requestDecorator from "./request_decorator";
+import requestDecorator from "./decorator";
 import { AppInstance } from "../app";
 import corsPlugin from "./cors"
 import jwt from "./jwt";
