@@ -114,11 +114,6 @@ async function updateCatalog(request: FastifyRequest<{ Params: { id: string } }>
         if (!findCatalog) {
             throw new NotFoundError("Catalog tidak ditemukan")
         }
-        if (images?.length ?? 0 >= 1) {
-            const deleteImages = findCatalog.images.map((img) => img.url)
-
-            unlinkImage(request, deleteImages)
-        }
 
         const input = {
             ...otherField,
@@ -127,6 +122,12 @@ async function updateCatalog(request: FastifyRequest<{ Params: { id: string } }>
 
         request.log.debug(input)
         const catalog = await catalogService.updateCatalog({ id: id, input: input })
+        
+        if (images?.length) {
+            const deleteImages = findCatalog.images.map((img) => img.url)
+
+            unlinkImage(request, deleteImages)
+        }
 
         return reply.code(200).send(responseFormater(200, "success", catalog))
 
