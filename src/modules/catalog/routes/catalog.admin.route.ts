@@ -1,10 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { catalogController } from "../catalog.controller";
-import { authMiddleware } from "../../../middleware/auth.middleware";
 import { buildSchema } from "../../../../utils/build_scema";
 import { responseSchema } from "../../../../utils/response";
 import { createCatalogSchema, ResponseCatalogSchema, UpdateCatalogSchema } from "../catalog.schema";
-import z, { xid } from "zod";
+import z from "zod";
+import { uploadMiddleware } from "../../../middleware/upload.middleware";
 
 
 /**
@@ -23,6 +23,7 @@ async function catalogRouteAdmin(server: FastifyInstance) {
                 200: responseSchema(200, "success", z.array(ResponseCatalogSchema)),
             }
         })
+        
     }, catalogController.getAllCatalog)
 
     server.get('/:id', {
@@ -35,26 +36,36 @@ async function catalogRouteAdmin(server: FastifyInstance) {
         })
     }, catalogController.getCatalogById)
 
+
     server.post('/', {
-        schema: buildSchema({
-            tags: [tags],
-            summary: "Create Catalog",
-            body: createCatalogSchema,
-            response: {
-                200: responseSchema(200, "success", ResponseCatalogSchema),
-            }
-        })
+        preHandler: uploadMiddleware,
+        schema: {
+            consumes: ['multipart/form-data'],
+            // deprecated: true,
+            ...buildSchema({
+                tags: [tags],
+                summary: "Create Catalog",
+                body: createCatalogSchema,
+                response: {
+                    200: responseSchema(200, "success", ResponseCatalogSchema),
+                }
+            }),
+        }
     }, catalogController.createCatalog)
 
     server.patch('/:id', {
-        schema: buildSchema({
-            tags: [tags],
-            summary: "Update Catalog",
-            body: UpdateCatalogSchema,
-            response: {
-                200: responseSchema(200, "success", ResponseCatalogSchema),
-            }
-        })
+        preHandler: uploadMiddleware,
+        schema: {
+            consumes: ['multipart/form-data'],
+            ...buildSchema({
+                tags: [tags],
+                summary: "Update Catalog",
+                body: UpdateCatalogSchema,
+                response: {
+                    200: responseSchema(200, "success", ResponseCatalogSchema),
+                }
+            })
+        }
     }, catalogController.updateCatalog)
 
     server.delete('/:id', {
@@ -62,7 +73,7 @@ async function catalogRouteAdmin(server: FastifyInstance) {
             tags: [tags],
             summary: "Delete Catalog",
             response: {
-                200: responseSchema(200, "success", z.string().meta({example:"Catalog berhasil dihapus"})),
+                200: responseSchema(200, "success", z.string().meta({ example: "Catalog berhasil dihapus" })),
             }
         })
     }, catalogController.deleteCatalog)

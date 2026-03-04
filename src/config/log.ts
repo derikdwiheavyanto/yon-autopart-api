@@ -1,15 +1,17 @@
 import pino from "pino";
+import { config } from ".";
 
 
 export const log = pino({
-    level: "debug",
+    level: config.isProduction ? "info" : "debug",
     transport: {
         target: "pino-pretty",
         options: {
             colorize: true,
-            translateTime: "HH:MM:ss",
+            translateTime: "SYS:yyyy-mm-dd HH:MM:ss",
             ignore: "pid,hostname,reqId",
-            singleLine: true
-        }
+            singleLine: false,
+        },
+
     }
 })

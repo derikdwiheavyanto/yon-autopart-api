@@ -5,11 +5,13 @@ import errorHandler from "./errors/error_handler"
 
 
 export function buildApp() {
-    const isProduction = process.env.NODE_ENV === 'production'
 
     const server = fastify({
-        loggerInstance: isProduction ? undefined : log,
+        loggerInstance: log,
         disableRequestLogging: true,
+        ajv: {
+            plugins: [require("@fastify/multipart").ajvFilePlugin]
+        }
     }).withTypeProvider<ZodTypeProvider>()
 
     server.setValidatorCompiler(validatorCompiler)

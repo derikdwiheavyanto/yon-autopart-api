@@ -1,5 +1,6 @@
+import { IInputUpload } from "../../middleware/upload.middleware";
 import * as catalogRepository from "./catalog.repository";
-import { CreateCatalogInput, UpdateCatalogInput } from "./catalog.schema";
+import { UpdateCatalogInput } from "./catalog.schema";
 
 
 async function isIdAvailable(id: number) {
@@ -17,11 +18,12 @@ async function getCatalogById(id: number) {
     return await catalogRepository.getCatalogById(id)
 }
 
-async function createCatalog(input: CreateCatalogInput) {
+async function createCatalog(input: any) {
+
     return await catalogRepository.createCatalog(input)
 }
 
-async function updateCatalog({ id, input }: { id: number, input: UpdateCatalogInput }) {
+async function updateCatalog({ id, input }: { id: number, input: IInputUpload }) {
     if (!await isIdAvailable(id)) {
         return null
     }

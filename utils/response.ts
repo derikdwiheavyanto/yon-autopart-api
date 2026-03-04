@@ -1,4 +1,4 @@
-import { ZodError, z } from "zod"
+import { z } from "zod"
 
 
 function responseFormater(statusCode: number, message: string, data: any) {

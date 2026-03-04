@@ -2,7 +2,6 @@ import AuthRepository from "./auth.repository"
 import { LoginInput, RegisterInput } from "./auth.schema"
 import bcrypt from "bcrypt"
 import { UnauthorizedError } from "../../errors/UnautorizedError"
-import fastify from "fastify"
 import { AlreadyUserError } from "../../errors/AlreadyUsersError"
 
 
