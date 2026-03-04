@@ -14,5 +14,5 @@ import fp from "fastify-plugin";
 // }
 
 export default fp(async function (server) {
-    server.register(import('@fastify/multipart'), { limits: { fileSize: 10 * 1024 * 1024 }, attachFieldsToBody: true })
+    server.register(import('@fastify/multipart'), { limits: { fileSize: 5 * 1024 * 1024 }, attachFieldsToBody: true })
 })
