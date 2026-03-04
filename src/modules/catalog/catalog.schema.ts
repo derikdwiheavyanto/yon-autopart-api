@@ -26,9 +26,6 @@ const imageValidation = z
     .refine((file) => file?.file, {
         message: 'The image is required.',
     })
-    .refine((file) => !file || file.file?.bytesRead <= 10 * 1024 * 1024, {
-        message: 'The image must be a maximum of 10MB.',
-    })
     .refine((file) => !file || file.mimetype.startsWith('image'), {
         message: 'Only images are allowed to be sent.',
     })
@@ -37,18 +34,18 @@ export const createCatalogSchema = z.object({
 
     title: z.preprocess(
         (val) => (val as MultipartValue)?.value,
-        corewithoutImage.title /* validation here */
+        corewithoutImage.title.meta({example:"Karbulator"}) /* validation here */
     ),
 
     price: z.preprocess(
         (val) => (val as MultipartValue)?.value,
-        corewithoutImage.price /* validation here */
+        corewithoutImage.price.meta({example:200000}) /* validation here */
 
     ),
 
     description: z.preprocess(
         (val) => (val as MultipartValue)?.value,
-        corewithoutImage.description /* validation here */
+        corewithoutImage.description.meta({example:"Barang Berkualitas"}) /* validation here */
     ),
     images: z.preprocess(
         (val) => {
@@ -57,7 +54,7 @@ export const createCatalogSchema = z.object({
         },
         z.array(
             imageValidation.meta({
-                type: "string",
+                type: "file",
                 format: "binary"
             })
         ).min(1, "Minimal 1 gambar harus diupload")
@@ -65,14 +62,7 @@ export const createCatalogSchema = z.object({
 })
 
 
-export const UpdateCatalogSchema = createCatalogSchema.partial().meta({
-    example: {
-        title: "Seker",
-        description: "Barang berkualitas gampanng rusak",
-        price: 2000,
-        image: "https://example.com/velg.jpg"
-    }
-})
+export const UpdateCatalogSchema = createCatalogSchema.partial()
 
 
 // Reply Schema

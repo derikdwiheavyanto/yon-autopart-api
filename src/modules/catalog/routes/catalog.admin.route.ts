@@ -54,12 +54,12 @@ async function catalogRouteAdmin(server: FastifyInstance) {
     }, catalogController.createCatalog)
 
     server.patch('/:id', {
+        preHandler: uploadMiddleware,
         schema: {
             consumes: ['multipart/form-data'],
-            deprecated: true,
             ...buildSchema({
                 tags: [tags],
-                summary: "IKI Yo RAKENEK",
+                summary: "Update Catalog",
                 body: UpdateCatalogSchema,
                 response: {
                     200: responseSchema(200, "success", ResponseCatalogSchema),
