@@ -5,7 +5,7 @@ import { z } from "zod"
 const imageSchema = z.object({
     id: z.number(),
     url: z.string(),
-    catalogId: z.number()
+    catalogId: z.number().optional()
 })
 
 // Base Catalog Schema

@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { UpdateCatalogInput } from "./catalog.schema";
 import catalogService from "./catalog.service";
 import { responseFormater } from "../../../utils/response";
 import fs from "fs/promises"
 import { IInputUpload } from "../../middleware/upload.middleware";
 import { NotFoundError } from "../../errors/NotFoundError";
+import path from "path";
 
 
 /**
@@ -44,11 +44,21 @@ async function getCatalogById(request: FastifyRequest<{ Params: { id: string } }
 }
 
 
-async function unlinkImage(request: FastifyRequest, paths?: string[]) {
-    if (paths) {
-        for (const image of paths) {
-            await fs.unlink(`.${image}`)
-            request.log.error(`ROLLBACK FILE: ${image}`)
+async function unlinkImage(
+    request: FastifyRequest,
+    paths?: string[]
+) {
+    if (!paths?.length) return
+
+    for (const image of paths) {
+        try {
+            const safePath = path.join(process.cwd(), image)
+
+            await fs.unlink(safePath)
+
+            request.log.info(`ROLLBACK FILE: ${image}`)
+        } catch (err) {
+            request.log.warn(`FAILED DELETE: ${image}`)
         }
     }
 }
@@ -100,6 +110,15 @@ async function updateCatalog(request: FastifyRequest<{ Params: { id: string } }>
     const id = Number(request.params.id)
     try {
         const savedImages: string[] | undefined = images?.map((img) => img);
+        const findCatalog = await catalogService.getCatalogById(id)
+        if (!findCatalog) {
+            throw new NotFoundError("Catalog tidak ditemukan")
+        }
+        if (images?.length ?? 0 >= 1) {
+            const deleteImages = findCatalog.images.map((img) => img.url)
+
+            unlinkImage(request, deleteImages)
+        }
 
         const input = {
             ...otherField,
@@ -108,9 +127,7 @@ async function updateCatalog(request: FastifyRequest<{ Params: { id: string } }>
 
         request.log.debug(input)
         const catalog = await catalogService.updateCatalog({ id: id, input: input })
-        if (!catalog) {
-            throw new NotFoundError("Catalog tidak ditemukan")
-        }
+
         return reply.code(200).send(responseFormater(200, "success", catalog))
 
     } catch (error) {

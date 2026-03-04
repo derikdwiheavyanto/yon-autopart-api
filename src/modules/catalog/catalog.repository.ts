@@ -10,6 +10,7 @@ export async function findAll() {
 export async function getCatalogById(id: number) {
     return await prisma.catalog.findUnique({
         where: { id },
+        include: { images: true }
     })
 
 }
@@ -34,7 +35,7 @@ export async function createCatalog(input: IInputUpload) {
 export async function updateCatalog(id: number, input: any) {
     const { images, ...otherField } = input
     const data: Record<string, any> = {}
-    for (const key in input) {
+    for (const key in otherField) {
         const value = input[key]
 
         if (value !== undefined) {
@@ -53,9 +54,17 @@ export async function updateCatalog(id: number, input: any) {
     return await prisma.catalog.update({
         where: { id: id },
         data: data,
-        include: {
-            images: true
-        }
+        select: {
+            id: true,
+            title: true,
+            description: true,
+            price: true,
+            images: { select: { id: true, url: true     } }
+        },
+        // include: {
+        //     images: true
+        // }
+
     })
 
 
