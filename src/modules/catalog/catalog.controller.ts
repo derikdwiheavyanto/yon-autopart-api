@@ -39,7 +39,7 @@ async function getCatalogById(request: FastifyRequest<{ Params: { id: string } }
     if (!catalog) {
         return reply.code(404).send(responseFormater(404, 'error', "Id tidak ditemukan"))
     }
-    return reply.code(200).send(responseFormater(201, 'success', catalog))
+    return reply.code(200).send(responseFormater(200, 'success', catalog))
 
 }
 
