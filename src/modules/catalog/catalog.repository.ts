@@ -2,22 +2,22 @@ import { prisma } from "../../db/prisma"
 import { IInputUpload } from "../../middleware/upload.middleware"
 
 
-export async function findAll() {
-    return await prisma.catalog.findMany({ include: { images: true } })
+export function findAll() {
+    return prisma.catalog.findMany({ include: { images: true } })
 
 }
 
-export async function getCatalogById(id: number) {
-    return await prisma.catalog.findUnique({
+export function getCatalogById(id: number) {
+    return prisma.catalog.findUnique({
         where: { id },
         include: { images: true }
     })
 
 }
 
-export async function createCatalog(input: IInputUpload) {
+export function createCatalog(input: IInputUpload) {
 
-    return await prisma.catalog.create({
+    return prisma.catalog.create({
         data: {
             title: input?.title ?? "",
             price: input?.price ?? 0,
@@ -32,7 +32,7 @@ export async function createCatalog(input: IInputUpload) {
     })
 }
 
-export async function updateCatalog(id: number, input: any) {
+export function updateCatalog(id: number, input: any) {
     const { images, ...otherField } = input
     const data: Record<string, any> = {}
     for (const key in otherField) {
@@ -51,7 +51,7 @@ export async function updateCatalog(id: number, input: any) {
             }))
         }
     }
-    return await prisma.catalog.update({
+    return prisma.catalog.update({
         where: { id: id },
         data: data,
         select: {
@@ -59,7 +59,7 @@ export async function updateCatalog(id: number, input: any) {
             title: true,
             description: true,
             price: true,
-            images: { select: { id: true, url: true     } }
+            images: { select: { id: true, url: true } }
         },
         // include: {
         //     images: true
@@ -70,9 +70,9 @@ export async function updateCatalog(id: number, input: any) {
 
 }
 
-export async function deleteCatalog(id: number) {
+export function deleteCatalog(id: number) {
 
-    return await prisma.catalog.delete({
+    return prisma.catalog.delete({
         where: {
             id: id
         },

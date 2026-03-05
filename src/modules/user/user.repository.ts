@@ -2,14 +2,14 @@ import { prisma } from "../../db/prisma";
 
 
 
-async function findById(id: number) {
-    return await prisma.user.findUnique({
+function findById(id: number) {
+    return prisma.user.findUnique({
         where: { id }
     })
 }
 
-async function findAll() {
-    return await prisma.user.findMany()
+function findAll() {
+    return prisma.user.findMany()
 }
 
 
