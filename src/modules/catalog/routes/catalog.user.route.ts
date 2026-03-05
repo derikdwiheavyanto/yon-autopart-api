@@ -8,6 +8,7 @@ import z from "zod";
 
 async function catalogRouteUser(server: FastifyInstance) {
     const tags = "Public"
+
     server.get('/catalog', {
         schema: buildSchema({
             tags: [tags],
@@ -19,10 +20,11 @@ async function catalogRouteUser(server: FastifyInstance) {
         })
     }, catalogController.getAllCatalog)
 
-    server.get('/:id', {
+    server.get('/catalog/:id', {
         schema: buildSchema({
             tags: [tags],
             summary: "Get Catalog By Id",
+            security:false,
             response: {
                 200: responseSchema(200, "success", ResponseCatalogSchema),
             }
