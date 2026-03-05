@@ -23,16 +23,45 @@ model user {
 }
 
 model Catalog {
-  id          Int            @id @default(autoincrement())
-  title       String         @db.VarChar(50)
-  price       Int            @db.Integer
-  description String         @db.Text
-  images       CatalogImage[]
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(50)
+  price       Int      @db.Integer
+  description String   @db.Text
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  images     CatalogImage[]
+  orderItems OrderItems[]
 }
 
 model CatalogImage {
-  id        Int     @id @default(autoincrement())
-  url       String  @db.VarChar(255)
+  id        Int    @id @default(autoincrement())
+  url       String @db.VarChar(255)
   catalogId Int
-  catalog   Catalog @relation(fields: [catalogId], references: [id], onDelete: Cascade)
+
+  catalog Catalog @relation(fields: [catalogId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id               Int      @id @default(autoincrement())
+  customer_address String
+  customer_name    String
+  customer_phone   String
+  customer_note    String?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  orderItems OrderItems[]
+}
+
+model OrderItems {
+  id        Int @id @default(autoincrement())
+  orderId   Int
+  catalogId Int
+  qty       Int
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  catalog Catalog @relation(fields: [catalogId], references: [id])
+
+  @@unique([orderId, catalogId])
 }
