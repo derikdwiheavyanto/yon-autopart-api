@@ -7,7 +7,7 @@ import { responseErrorSchema, responseSchema } from "../../../../utils/response"
 
 
 async function AuthRoutes(server: FastifyInstance) {
-    const tags = "AUTH"
+    const tags = "Auth"
 
     // Login
     server.post('/login', {

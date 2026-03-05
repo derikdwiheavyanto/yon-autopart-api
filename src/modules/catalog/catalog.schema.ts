@@ -5,7 +5,7 @@ import { z } from "zod"
 const imageSchema = z.object({
     id: z.number(),
     url: z.string(),
-    catalogId: z.number()
+    catalogId: z.number().optional()
 })
 
 // Base Catalog Schema
@@ -23,29 +23,30 @@ const { images, ...corewithoutImage } = coreCatalogSchema
 
 const imageValidation = z
     .custom<MultipartFile>()
-    .refine((file) => file?.file, {
-        message: 'The image is required.',
-    })
     .refine((file) => !file || file.mimetype.startsWith('image'), {
         message: 'Only images are allowed to be sent.',
+    }).refine((file) => file?.file, {
+        message: 'The image is required.',
+    }).refine((file) => !file || file.file?.bytesRead <= 5 * 1024 * 1024, {
+        message: 'The image must be a maximum of 5MB.',
     })
 
 export const createCatalogSchema = z.object({
 
     title: z.preprocess(
         (val) => (val as MultipartValue)?.value,
-        corewithoutImage.title.meta({example:"Karbulator"}) /* validation here */
+        corewithoutImage.title.meta({ example: "Karbulator" }) /* validation here */
     ),
 
     price: z.preprocess(
         (val) => (val as MultipartValue)?.value,
-        corewithoutImage.price.meta({example:200000}) /* validation here */
+        corewithoutImage.price.meta({ example: 200000 }) /* validation here */
 
     ),
 
     description: z.preprocess(
         (val) => (val as MultipartValue)?.value,
-        corewithoutImage.description.meta({example:"Barang Berkualitas"}) /* validation here */
+        corewithoutImage.description.meta({ example: "Barang Berkualitas" }) /* validation here */
     ),
     images: z.preprocess(
         (val) => {

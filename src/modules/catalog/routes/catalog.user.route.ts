@@ -1,13 +1,14 @@
 import { FastifyInstance } from "fastify";
 import { catalogController } from "../catalog.controller";
 import { buildSchema } from "../../../../utils/build_scema";
-import {responseSchema } from "../../../../utils/response";
+import { responseSchema } from "../../../../utils/response";
 import { ResponseCatalogSchema } from "../catalog.schema";
 import z from "zod";
 
 
 async function catalogRouteUser(server: FastifyInstance) {
     const tags = "Public"
+
     server.get('/catalog', {
         schema: buildSchema({
             tags: [tags],
@@ -18,6 +19,18 @@ async function catalogRouteUser(server: FastifyInstance) {
             }
         })
     }, catalogController.getAllCatalog)
+
+    server.get('/catalog/:id', {
+        schema: buildSchema({
+            tags: [tags],
+            summary: "Get Catalog By Id",
+            security:false,
+            response: {
+                200: responseSchema(200, "success", ResponseCatalogSchema),
+            }
+        })
+    }, catalogController.getCatalogById)
+
 }
 
 export default catalogRouteUser
