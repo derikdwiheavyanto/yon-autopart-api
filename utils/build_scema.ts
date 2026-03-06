@@ -1,6 +1,6 @@
 
 
-export function buildSchema({ tags, summary, body = null, security = true, response }: { tags: any[], summary: string, body?: any, security?: boolean, response: any }) {
+export function buildSchema({ tags, summary, body = null, security = true, response }: { tags: any[], summary: string, body?: any, security?: boolean, response?: any }) {
 
     const securityBearer = {
         security: [{ bearerAuth: [] }]
@@ -11,6 +11,6 @@ export function buildSchema({ tags, summary, body = null, security = true, respo
         summary: summary,
         ...(security && securityBearer),
         ...(body && { body }),
-        response: response
+        ...(response && { response })
     }
 }

@@ -47,6 +47,8 @@ async function onResponseLogging(
     request: FastifyRequest,
     reply: FastifyReply
 ) {
+    if (request.method === "OPTIONS") return
+
     const startTime = request.getDecorator<number>('startTime')
     const isError = request.getDecorator<boolean>('isError')
     if (isError) return
