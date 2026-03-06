@@ -1,4 +1,6 @@
 import { prisma } from "../../db/prisma";
+import { NotFoundError } from "../../errors/NotFoundError";
+import catalogService from "../catalog/catalog.service";
 import orderRepository from "./order.repository";
 import { CatalogOrderItems, createOrderInput } from "./order.schema";
 
@@ -11,7 +13,7 @@ async function createOrder(orderInput: createOrderInput) {
 
         //get catalog price
         const catalogIds = catalog_order_items.map((item) => item.id)
-        const catalog = await orderRepository.findCatalogPrice(catalogIds,tx)
+        const catalog = await orderRepository.findCatalogPrice(catalogIds, tx)
         const catalogPriceMap = new Map(catalog.map((c) => [c.id, c.price]))
 
         //prepare for create order_items
@@ -32,14 +34,45 @@ async function createOrder(orderInput: createOrderInput) {
         await orderRepository.createOrderItems(created_order.id, orderItemsData, tx)
 
         // Sum totalprice in orderitem
-        const total = await orderRepository.sumOrderPrice(created_order.id,tx)
+        const total = await orderRepository.sumOrderPrice(created_order.id, tx)
         const total_price = total._sum.total_price ?? 0
 
         // update totalprice in order
-        return orderRepository.updateOrderTotalPrice(created_order.id, total_price,tx)
+        return orderRepository.updateOrderTotalPrice(created_order.id, total_price, tx)
 
     })
 }
 
-const OrderService = {createOrder}
+async function createOrderandPrepareWA(body: createOrderInput) {
+    const idsCatalog = body.catalog_order_items.map((c) => c.id)
+    const isIdsAvailable = await catalogService.isIdsAvailable(idsCatalog)
+    if (!isIdsAvailable) {
+        throw new NotFoundError("Id tidak ditemukan")
+    }
+
+    const result = await createOrder(body)
+    const phone = '6282131790614'
+
+    let message = `*Order Baru Masuk*\n\n`;
+    message += `Nama: ${result.customer_name}\n`;
+    message += `Alamat: ${result.customer_address}\n`;
+    message += `No. HP: ${result.customer_phone}\n`;
+    message += `Catatan: ${result.customer_note}\n\n`;
+    message += `Detail Order:\n`;
+
+    result.orderItems.forEach((item, i) => {
+        message += `${i + 1}. ${item.catalog.title}\n`;
+        message += `   Jumlah: ${item.qty}\n`;
+        message += `   Harga: Rp.${item.price.toLocaleString()}\n`;
+        message += `   Total: Rp.${item.total_price.toLocaleString()}\n`;
+    });
+
+    message += `\nTotal Bayar: Rp.${result.total_price.toLocaleString()}`;
+
+    const waLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+    return { ...result, waLink }
+}
+
+const OrderService = { createOrder, createOrderandPrepareWA }
 export default OrderService
