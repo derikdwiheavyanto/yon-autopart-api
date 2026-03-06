@@ -4,7 +4,8 @@ import { prisma } from "../../db/prisma";
 
 function findById(id: number) {
     return prisma.user.findUnique({
-        where: { id }
+        where: { id },
+        omit: { password: true }
     })
 }
 

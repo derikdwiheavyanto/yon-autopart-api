@@ -11,6 +11,7 @@ const BaseAuthSchema = {
 const BaseAuthResponseExample = {
     name: "derik",
     email: "derik@gmail.com",
+    phone: "6282131790614",
     age: 22,
     address: "Besuki Tulungagung"
 }
@@ -30,6 +31,7 @@ export const LoginInputSchema = z.object({
 export const RegisterInputSchema = z.object({
     name: z.string(),
     ...BaseAuthSchema,
+    phone: z.string(),
     age: z.number(),
     address: z.string().optional(),
 }).meta({
@@ -53,7 +55,7 @@ export const LoginResponseSchema = z.object({
     token: z.string()
 }).meta({
     example: {
-        id:1,
+        id: 1,
         ...BaseAuthResponseExample,
         token: "token"
 

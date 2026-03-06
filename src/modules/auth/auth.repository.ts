@@ -19,7 +19,7 @@ function findByEmail(email: string) {
 function createUser(input: RegisterInput) {
     return prisma.user.create({
         data: { ...input },
-        select: { ...selectUserProperty }
+        omit: { password: true }
     })
 }
 

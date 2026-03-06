@@ -41,13 +41,7 @@ function createOrderItems(orderId: number, items: CatalogOrderItems[], tx?: Pris
 
 function updateOrderTotalPrice(orderId: number, totalPrice: number, tx?: Prisma.TransactionClient) {
     const client = tx ?? prisma
-    // const select = {
-    //     orderItems: {
-    //         select: {
-    //             catalog:
-    //         }
-    //     }
-    // }
+
     return client.order.update({
         where: { id: orderId },
         data: { total_price: totalPrice },

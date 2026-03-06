@@ -17,6 +17,7 @@ model user {
   id       Int     @id @default(autoincrement())
   name     String  @db.VarChar(50)
   email    String  @unique @db.VarChar(50)
+  phone    String  @db.VarChar(20)
   password String
   age      Int     @db.Integer
   address  String? @db.VarChar(100)
@@ -43,22 +44,26 @@ model CatalogImage {
 }
 
 model Order {
-  id               Int      @id @default(autoincrement())
-  customer_address String
+  id               Int     @id @default(autoincrement())
   customer_name    String
+  customer_address String
   customer_phone   String
   customer_note    String?
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  total_price      Int     @default(0)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   orderItems OrderItems[]
 }
 
 model OrderItems {
-  id        Int @id @default(autoincrement())
-  orderId   Int
-  catalogId Int
-  qty       Int
+  id          Int @id @default(autoincrement())
+  orderId     Int
+  catalogId   Int
+  qty         Int
+  price       Int
+  total_price Int @default(0)
 
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   catalog Catalog @relation(fields: [catalogId], references: [id])

@@ -15,6 +15,12 @@ export function getCatalogById(id: number) {
 
 }
 
+export function findCatalogByIds(id: number[]) {
+    return prisma.catalog.findMany({
+        where: { id: { in: id } }
+    })
+}
+
 export function createCatalog(input: IInputUpload) {
 
     return prisma.catalog.create({
@@ -59,11 +65,8 @@ export function updateCatalog(id: number, input: any) {
             title: true,
             description: true,
             price: true,
-            images: { select: { id: true, url: true } }
+            images: { omit: { catalogId: true } }
         },
-        // include: {
-        //     images: true
-        // }
 
     })
 

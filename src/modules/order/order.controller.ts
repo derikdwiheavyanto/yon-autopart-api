@@ -3,12 +3,19 @@ import { createOrderInput } from "./order.schema";
 import OrderService from "./order.service";
 import { responseFormater } from "../../../utils/response";
 import UserService from "../user/user.service";
+import catalogService from "../catalog/catalog.service";
+import { NotFoundError } from "../../errors/NotFoundError";
 
 
 async function order(request: FastifyRequest<{ Body: createOrderInput }>, reply: FastifyReply) {
-    const result = await OrderService.createOrder(request.body)
-    const idUser = Number(request.id)
-    const user = await UserService.findUserById(idUser)
+    const body = request.body
+    const idsCatalog = body.catalog_order_items.map((c) => c.id)
+    const isIdsAvailable = await catalogService.isIdsAvailable(idsCatalog)
+    if (!isIdsAvailable) {
+        throw new NotFoundError("Id tidak ditemukan")
+    }
+    const result = await OrderService.createOrder(body)
+    const phone = '6282131790614'
 
     let message = `*Order Baru Masuk*\n\n`;
     message += `Nama: ${result.customer_name}\n`;
@@ -26,7 +33,7 @@ async function order(request: FastifyRequest<{ Body: createOrderInput }>, reply:
 
     message += `\nTotal Bayar: Rp.${result.total_price.toLocaleString()}`;
 
-    const waLink = `https://wa.me/6282233795350?text=${encodeURIComponent(message)}`;
+    const waLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
     reply.code(200).send(responseFormater(200, 'success', { ...result, waLink: waLink }))
 }

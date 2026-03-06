@@ -10,6 +10,14 @@ async function isIdAvailable(id: number) {
     return true
 }
 
+async function isIdsAvailable(id: number[]) {
+    const catalog = await catalogRepository.findCatalogByIds(id)
+    if (catalog.length < id.length) {
+        return false
+    }
+    return true
+}
+
 async function getAllCatalog() {
     return catalogRepository.findAll()
 }
@@ -38,5 +46,5 @@ async function deleteCatalog(id: number) {
 }
 
 
-const catalogService = { getAllCatalog, createCatalog, updateCatalog, deleteCatalog, getCatalogById }
+const catalogService = { getAllCatalog, createCatalog, updateCatalog, deleteCatalog, getCatalogById, isIdsAvailable }
 export default catalogService
