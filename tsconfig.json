@@ -8,5 +8,6 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "rootDir": "."
-  }
+  },
+  "exclude": ["prisma.config.ts"]
 }

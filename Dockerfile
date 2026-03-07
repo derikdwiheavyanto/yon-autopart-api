@@ -17,8 +17,11 @@ FROM node:20-alpine
 WORKDIR /yon-autopart-app
 
 COPY package*.json .
-RUN npm install
 
+# uncomment if this production
+# RUN npm install --omit=dev  
+# for development
+RUN npm install  
 
 COPY --from=builder /yon-autopart-app/dist ./dist
 COPY --from=builder /yon-autopart-app/prisma ./prisma

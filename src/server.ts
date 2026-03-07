@@ -13,7 +13,7 @@ async function start() {
     const app = buildApp()
     await registerPlugins(app)
     await registerHooks(app)
-    await registerRoute(app)
+    !config.isProduction && await registerRoute(app)
     // 
 
     //fastify listen
