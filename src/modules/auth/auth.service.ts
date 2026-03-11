@@ -6,26 +6,22 @@ import { AlreadyUserError } from "../../errors/AlreadyUsersError"
 
 
 async function login(input: LoginInput) {
-    try {
-        const user = await AuthRepository.findByEmail(input.email)
-        if (!user) {
-            throw new UnauthorizedError("Email atau password salah")
-        }
-
-        const verifyPassword = await bcrypt.compare(input.password, user.password)
-        if (!verifyPassword) {
-            throw new UnauthorizedError("Email atau password salah")
-        }
-
-        return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            age: user.age,
-            address: user.address
-        }
-    } catch (error) {
+    const user = await AuthRepository.findByEmail(input.email)
+    if (!user) {
         throw new UnauthorizedError("Email atau password salah")
+    }
+
+    const verifyPassword = await bcrypt.compare(input.password, user.password)
+    if (!verifyPassword) {
+        throw new UnauthorizedError("Email atau password salah")
+    }
+
+    return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        age: user.age,
+        address: user.address
     }
 }
 
