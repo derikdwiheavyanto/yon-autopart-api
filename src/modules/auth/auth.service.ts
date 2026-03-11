@@ -25,7 +25,7 @@ async function login(input: LoginInput) {
             address: user.address
         }
     } catch (error) {
-        throw new UnauthorizedError()
+        throw new UnauthorizedError("Email atau password salah")
     }
 }
 
