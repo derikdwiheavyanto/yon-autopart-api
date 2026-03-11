@@ -7,7 +7,7 @@ const envSchema = z.object({
 
     PORT: z.coerce.number().default(3000),
     HOST: z.string().default("0.0.0.0"),
-
+    API_URL: z.string(),
     NODE_ENV: z
         .enum(["development", "production", "test"])
         .default("development"),
@@ -49,6 +49,7 @@ export const config = {
     host: parsed.data.HOST,
     nodeEnv: parsed.data.NODE_ENV,
     jwtSecret: parsed.data.JWT_SECRET,
+    apiUrl: parsed.data.API_URL,
     cors: {
         origin: parsed.data.CORS_ORIGIN,
         methods: parsed.data.CORS_METHODS,
