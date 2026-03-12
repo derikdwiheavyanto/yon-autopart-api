@@ -14,7 +14,21 @@ services:
       - yon_autopart_network
     depends_on:
       - yon_autopart_api
+  
+  ngrok:
+    image: wernight/ngrok
+    command: http web:80
+    networks:
+      - shared_network_ngrok
+    env_file:
+      - .env.docker
+    depends_on:
+      - web
+    restart: always
 
 networks:
   yon_autopart_network:
+    external: true
+  ngrok_network:
+    name: ngrok_network
     external: true
