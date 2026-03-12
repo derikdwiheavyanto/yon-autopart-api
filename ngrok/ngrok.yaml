@@ -1,0 +1,9 @@
+authtoken: 2yTlLCJowyloUov7Ie5VJkWhUho_6rbG3gVLHqybetPXFWx5Z
+
+tunnels:
+  web:
+    proto: http
+    addr: host.docker.internal:80   # HTTP/HTTPS ke Nginx di host
+  tcpapp:
+    proto: tcp
+    addr: host.docker.internal:22   # TCP misal SSH, ganti port sesuai kebutuhan

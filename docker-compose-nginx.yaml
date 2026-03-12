@@ -15,14 +15,21 @@ services:
     depends_on:
       - yon_autopart_api
 
+  # ngrok:
+  #   image: ngrok/ngrok:latest
+  #   container_name: ngrok
+  #   env_file:
+  #     - .env.docker
+  #   command: http --url=magical-foxhound-devoted.ngrok-free.app 80 
+  #   network_mode: "host"
+  #   restart: always
   ngrok:
     image: ngrok/ngrok:latest
-    container_name: ngrok
-    env_file:
-      - .env.docker
-    command: http --url=magical-foxhound-devoted.ngrok-free.app 80 
-    network_mode: "host"
-    restart: always
+    container_name: ngrok-agent
+    restart: unless-stopped
+    volumes:
+      - ./ngrok/ngrok.yml:/etc/ngrok/ngrok.yml:ro
+    command: start --all
 
 networks:
   yon_autopart_network:
