@@ -1,0 +1,20 @@
+services:
+  web:
+    image: nginx
+    container_name: web
+    volumes:
+      - ./nginx:/etc/nginx/templates
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_HOST=foobar.com
+      - NGINX_PORT=80
+      - HOST=localhost
+    networks:
+      - yon_autopart_network
+    depends_on:
+      - yon_autopart_api
+
+networks:
+  yon_autopart_network:
+    external: true

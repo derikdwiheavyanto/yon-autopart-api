@@ -1,0 +1,14 @@
+server {
+    listen ${NGINX_PORT};
+    server_name ${HOST};
+
+    location = / {
+        return 302 /docs;
+    }
+
+    location / {
+        proxy_pass http://yon_autopart_api:3333;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
