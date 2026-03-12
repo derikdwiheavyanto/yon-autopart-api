@@ -17,7 +17,7 @@ services:
   ngrok:
     image: wernight/ngrok
     container_name: ngrok
-    command: http web:80 --region=us
+    command: start --authtoken $NGROK_AUTHTOKEN --region ap http web:80
     networks:
       - ngrok_network
     env_file:
