@@ -10,16 +10,16 @@ const selectUserProperty = {
     address: true
 }
 
-async function findByEmail(email: string) {
-    return await prisma.user.findUnique({
+function findByEmail(email: string) {
+    return prisma.user.findUnique({
         where: { email: email },
     })
 }
 
-async function createUser(input: RegisterInput) {
-    return await prisma.user.create({
+function createUser(input: RegisterInput) {
+    return prisma.user.create({
         data: { ...input },
-        select: { ...selectUserProperty }
+        omit: { password: true }
     })
 }
 

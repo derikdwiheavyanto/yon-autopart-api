@@ -4,7 +4,7 @@ import path from 'path'
 
 export default fp(async function (app, option) {
     await app.register(fastifyStatic, {
-        root: path.join(__dirname, '../../uploads'),
+        root: path.join(process.cwd(), 'uploads'),
         prefix: '/uploads/', // URL prefix
     })
 })

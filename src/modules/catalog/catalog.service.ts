@@ -10,33 +10,41 @@ async function isIdAvailable(id: number) {
     return true
 }
 
+async function isIdsAvailable(id: number[]) {
+    const catalog = await catalogRepository.findCatalogByIds(id)
+    if (catalog.length < id.length) {
+        return false
+    }
+    return true
+}
+
 async function getAllCatalog() {
-    return await catalogRepository.findAll()
+    return catalogRepository.findAll()
 }
 
 async function getCatalogById(id: number) {
-    return await catalogRepository.getCatalogById(id)
+    return catalogRepository.getCatalogById(id)
 }
 
-async function createCatalog(input: any) {
+async function createCatalog(input: IInputUpload) {
 
-    return await catalogRepository.createCatalog(input)
+    return catalogRepository.createCatalog(input)
 }
 
 async function updateCatalog({ id, input }: { id: number, input: IInputUpload }) {
     if (!await isIdAvailable(id)) {
         return null
     }
-    return await catalogRepository.updateCatalog(id, input)
+    return catalogRepository.updateCatalog(id, input)
 }
 
 async function deleteCatalog(id: number) {
     if (!await isIdAvailable(id)) {
         return null
     }
-    return await catalogRepository.deleteCatalog(id)
+    return catalogRepository.deleteCatalog(id)
 }
 
 
-const catalogService = { getAllCatalog, createCatalog, updateCatalog, deleteCatalog, getCatalogById }
+const catalogService = { getAllCatalog, createCatalog, updateCatalog, deleteCatalog, getCatalogById, isIdsAvailable }
 export default catalogService

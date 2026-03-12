@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:16
@@ -7,13 +5,81 @@ services:
     restart: always
     ports:
       - 5432:5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=yon_autopart_db
+    env_file:
+      - .env.docker
     volumes: 
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - yon_autopart_network
+  
+  yon_autopart_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yon_autopart_api
+    restart: always
+    ports:
+      - 3333:3333
+    volumes:
+      - ./uploads-docker:/yon-autopart-app/uploads
+    env_file:
+      - .env.docker
+    environment:
+      - TZ=Asia/Jakarta
+    depends_on:
+      - postgres
+    networks:
+      - yon_autopart_network
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: 2
+
+# # LOGGIN SYSTEM
+#   loki:
+#     image: grafana/loki:2.9.2
+#     container_name: loki
+#     ports:
+#       - "3100:3100"
+#     volumes:
+#       - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml
+#       - loki_data:/loki  # semua storage (index, chunks, WAL) ada di sini
+#     networks:
+#       - yon_autopart_network
+
+#   promtail:
+#     image: grafana/promtail:latest
+#     container_name: promtail
+#     volumes:
+#       - /var/lib/docker/containers:/var/lib/docker/containers:ro
+#       - /var/run/docker.sock:/var/run/docker.sock:ro
+#       - ./loki/promtail-config.yaml:/etc/promtail/config.yaml
+#     command: -config.file=/etc/promtail/config.yaml
+#     networks:
+#       - yon_autopart_network
+
+#   grafana:
+#     image: grafana/grafana:latest
+#     container_name: grafana
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - GF_SECURITY_ADMIN_PASSWORD=admin
+#     depends_on:
+#       - loki
+#     networks:
+#       - yon_autopart_network
+#     volumes:
+#       - grafana_data:/var/lib/grafana
 
 volumes:
   postgres_data:
     name: postgres_data
+  # grafana_data:
+  #   name: grafana_data
+  # loki_data:
+    
+networks:
+  yon_autopart_network:
+    name: yon_autopart_network

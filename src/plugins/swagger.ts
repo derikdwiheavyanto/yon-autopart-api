@@ -1,6 +1,7 @@
 import fastifySwagger from "@fastify/swagger";
 import { jsonSchemaTransform } from "fastify-type-provider-zod";
 import fp from "fastify-plugin";
+import { config } from "../config";
 
 
 export default fp(async function (server) {
@@ -14,7 +15,7 @@ export default fp(async function (server) {
             },
             servers: [
                 {
-                    url: 'http://192.168.1.10:3333/',
+                    url: config.apiUrl,
                     description: 'Development server'
                 },
             ],

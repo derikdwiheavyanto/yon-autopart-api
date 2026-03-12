@@ -40,23 +40,25 @@ async function onRequestLogging(
     request: FastifyRequest,
     reply: FastifyReply
 ) {
-    request.setDecorator<number>('startTime',Date.now()) 
+    // request.setDecorator<number>('startTime', Date.now())
 }
 
 async function onResponseLogging(
     request: FastifyRequest,
     reply: FastifyReply
 ) {
+    if (request.method === "OPTIONS") return
+
     const startTime = request.getDecorator<number>('startTime')
     const isError = request.getDecorator<boolean>('isError')
     if (isError) return
 
-    const duration = Date.now() - (startTime ?? Date.now())
+    // const duration = Date.now() - (startTime ?? Date.now())
 
-    const method = colorMethod(request.method).padEnd(6)
-    const url = request.url.padEnd(25)
-    const status = colorStatus(reply.statusCode)
-    const time = colors.gray(`${duration}ms`)
+    const method = colorMethod(request.method.padEnd(7));
+    const url = (request.url.length > 40 ? request.url.slice(0, 37) + "..." : request.url).padEnd(40);
+    const status = colorStatus(reply.statusCode).padEnd(5);
+    const time = colors.gray(`${reply.elapsedTime.toFixed(0)}ms`);
 
     request.log.info(
         `${method} ${url} ${status} ${time}`
@@ -69,7 +71,7 @@ async function onErrorLogging(
     error: FastifyError
 ) {
     const startTime = request.getDecorator<number>('startTime')
-    request.setDecorator<boolean>('isError',true) 
+    request.setDecorator<boolean>('isError', true)
 
     const duration =
         Date.now() - (startTime ?? Date.now())
