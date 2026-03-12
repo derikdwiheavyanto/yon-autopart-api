@@ -5,6 +5,8 @@ import fs from "fs/promises"
 import { IInputUpload } from "../../middleware/upload.middleware";
 import { NotFoundError } from "../../errors/NotFoundError";
 import path from "path";
+import { config } from "../../config";
+
 
 
 /**
@@ -18,7 +20,11 @@ import path from "path";
 async function getAllCatalog(request: FastifyRequest, reply: FastifyReply) {
 
     const catalog = await catalogService.getAllCatalog()
-    return reply.code(200).send(responseFormater(200, 'success', catalog))
+    const addedBaseUrlImages = catalog.map((c) => ({
+        ...c,
+        images: c.images.map((img) => ({ ...img, url: `${config.apiUrl}${img.url}` }))
+    }))
+    return reply.code(200).send(responseFormater(200, 'success', addedBaseUrlImages))
 
 }
 
@@ -35,9 +41,13 @@ async function getAllCatalog(request: FastifyRequest, reply: FastifyReply) {
 async function getCatalogById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     const id = Number(request.params.id)
     const catalog = await catalogService.getCatalogById(id)
+
     if (!catalog) {
         return reply.code(404).send(responseFormater(404, 'error', "Id tidak ditemukan"))
     }
+
+    catalog.images = catalog?.images.map((img) => ({ ...img, url: `${config.apiUrl}${img.url}` }))
+
     return reply.code(200).send(responseFormater(200, 'success', catalog))
 
 }
@@ -88,6 +98,7 @@ async function createCatalog(request: FastifyRequest, reply: FastifyReply) {
 
         request.log.debug(input)
         const catalog = await catalogService.createCatalog(input)
+        catalog.images = catalog?.images.map((img) => ({ ...img, url: `${config.apiUrl}${img.url}` }))
 
         return reply.code(201).send(responseFormater(201, "success", catalog))
     } catch (error) {
@@ -122,7 +133,7 @@ async function updateCatalog(request: FastifyRequest<{ Params: { id: string } }>
             images: savedImages
         }
 
-        request.log.debug("Input: " + input)
+        reply.log.debug("Input: " + input)
         const catalog = await catalogService.updateCatalog({ id: id, input: input })
 
         if (images?.length) {
@@ -131,10 +142,14 @@ async function updateCatalog(request: FastifyRequest<{ Params: { id: string } }>
             unlinkImage(request, deleteImages)
         }
 
+        if (catalog) {
+            catalog.images = catalog?.images.map((img) => ({ ...img, url: `${config.apiUrl}${img.url}` }))
+        }
+
         return reply.code(200).send(responseFormater(200, "success", catalog))
 
     } catch (error) {
-        unlinkImage(request, images, {rollbackLogs: true})
+        unlinkImage(request, images, { rollbackLogs: true })
         throw error
     }
 }
