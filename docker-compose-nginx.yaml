@@ -20,7 +20,7 @@ services:
     container_name: ngrok
     env_file:
       - .env.docker
-    command: http 80 
+    command: http --url=magical-foxhound-devoted.ngrok-free.app 80 
     network_mode: "host"
     restart: always
 
