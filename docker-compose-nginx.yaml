@@ -18,12 +18,12 @@ services:
   ngrok:
     image: ngrok/ngrok:latest
     container_name: ngrok
-    environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    env_file:
+      - .env.docker
     command: http 80 --region ap
     network_mode: "host"
     restart: always
-    
+
 networks:
   yon_autopart_network:
     external: true
