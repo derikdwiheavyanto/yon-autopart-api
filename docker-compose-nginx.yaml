@@ -16,6 +16,7 @@ services:
   
   ngrok:
     image: wernight/ngrok
+    container_name: ngrok
     command: http web:80
     networks:
       - ngrok_network
