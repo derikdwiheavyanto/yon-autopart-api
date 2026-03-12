@@ -18,8 +18,6 @@ services:
   ngrok:
     image: ngrok/ngrok:latest
     container_name: ngrok
-    ports:
-      - 80:80
     env_file:
       - .env.docker
     command: ngrok http 80 
