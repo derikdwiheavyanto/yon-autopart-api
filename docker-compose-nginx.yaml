@@ -12,6 +12,7 @@ services:
       - HOST=localhost
     networks:
       - yon_autopart_network
+      - shared_network_ngrok
     depends_on:
       - yon_autopart_api
   
