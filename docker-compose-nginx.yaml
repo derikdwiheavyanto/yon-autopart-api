@@ -4,15 +4,13 @@ services:
     container_name: web
     volumes:
       - ./nginx:/etc/nginx/templates
-    ports:
-      - "80:80"
     environment:
       - NGINX_HOST=foobar.com
       - NGINX_PORT=80
       - HOST=localhost
     networks:
       - yon_autopart_network
-      - shared_network_ngrok
+      - ngrok_network
     depends_on:
       - yon_autopart_api
   
@@ -20,7 +18,7 @@ services:
     image: wernight/ngrok
     command: http web:80
     networks:
-      - shared_network_ngrok
+      - ngrok_network
     env_file:
       - .env.docker
     depends_on:
