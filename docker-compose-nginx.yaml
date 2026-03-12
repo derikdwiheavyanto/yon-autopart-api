@@ -20,7 +20,7 @@ services:
     container_name: ngrok
     env_file:
       - .env.docker
-    command: ngrok http 80 
+    command: http 80 
     network_mode: "host"
     restart: always
 
