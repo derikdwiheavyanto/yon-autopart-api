@@ -18,9 +18,11 @@ services:
   ngrok:
     image: ngrok/ngrok:latest
     container_name: ngrok
+    ports:
+      - 80:80
     env_file:
       - .env.docker
-    command: http 80 --region ap
+    command: ngrok http 80 
     network_mode: "host"
     restart: always
 
