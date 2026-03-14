@@ -13,7 +13,7 @@ import { uploadMiddleware } from "../../../middleware/upload.middleware";
  *
  */
 async function catalogRouteAdmin(server: FastifyInstance) {
-    const tags = "Admin"
+    const tags = "Admin - Catalog"
 
     server.get('/', {
         schema: buildSchema({

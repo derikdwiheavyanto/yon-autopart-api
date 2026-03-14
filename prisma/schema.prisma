@@ -44,12 +44,13 @@ model CatalogImage {
 }
 
 model Order {
-  id               Int     @id @default(autoincrement())
+  id               Int         @id @default(autoincrement())
   customer_name    String
   customer_address String
   customer_phone   String
   customer_note    String?
-  total_price      Int     @default(0)
+  total_price      Int         @default(0)
+  status_order     StatusOrder @default(NEW)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -69,4 +70,13 @@ model OrderItems {
   catalog Catalog @relation(fields: [catalogId], references: [id])
 
   @@unique([orderId, catalogId])
+}
+
+enum StatusOrder {
+  NEW
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  COMPLETED
+  CANCELLED
 }

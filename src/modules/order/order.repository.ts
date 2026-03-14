@@ -1,5 +1,5 @@
 import { prisma } from "../../db/prisma";
-import { Prisma, PrismaClient } from "../../generated/prisma/client";
+import { Prisma, PrismaClient, StatusOrder } from "../../generated/prisma/client";
 import { CatalogOrderItems, createOrderInput } from "./order.schema";
 
 
@@ -25,6 +25,43 @@ function findCatalogPrice(orderids: number[], tx?: Prisma.TransactionClient) {
         select: {
             id: true,
             price: true
+        }
+    })
+}
+
+function getOrder() {
+    return prisma.order.findMany()
+}
+
+function updateStatusOrder(id: number, status_order: StatusOrder) {
+    return prisma.order.update({
+        where: { id },
+        data: { status_order: status_order }
+    })
+}
+
+function getOrderById(id: number) {
+    return prisma.order.findUnique({
+        where: { id },
+        select: {
+            id: true,
+            customer_name: true,
+            customer_address: true,
+            customer_phone: true,
+            customer_note: true,
+            status_order: true,
+            total_price: true,
+            orderItems: {
+                select: {
+                    catalogId: true,
+                    price: true,
+                    qty: true,
+                    total_price: true,
+                    catalog: {
+                        omit: { price: true, updated_at: true, created_at: true, id: true }
+                    }
+                }
+            }
         }
     })
 }
@@ -57,5 +94,14 @@ function sumOrderPrice(orderId: number, tx?: Prisma.TransactionClient) {
     })
 }
 
-const orderRepository = { createOrder, sumOrderPrice, updateOrderTotalPrice, createOrderItems, findCatalogPrice }
+const orderRepository = {
+    createOrder,
+    sumOrderPrice,
+    updateOrderTotalPrice,
+    createOrderItems,
+    findCatalogPrice,
+    getOrder,
+    updateStatusOrder,
+    getOrderById
+}
 export default orderRepository

@@ -1,4 +1,5 @@
 import z, { number } from "zod";
+import { StatusOrder } from "../../generated/prisma/enums";
 
 const baseOrderSchema = {
     customer_name: z.string().meta({ example: "derik" }),
@@ -17,12 +18,18 @@ export const CreateOrderSchema = z.object({
     catalog_order_items: z.array(order_item).meta({ example: [{ id: 1, qty: 1 }, { id: 2, qty: 2 }] })
 })
 
+
+export const UpdateStatusOrderSchema = z.object({
+    status_order: z.enum(StatusOrder, `Status order tidak valid. Nilai yang diperbolehkan: ${Object.values(StatusOrder).join(", ")}`)
+})
+
 export interface CatalogOrderItems {
     catalogId: number
     qty: number
     price: number
     total_price: number
-
 }
 
+
+export type UpdateStatusOrderInput = z.infer<typeof UpdateStatusOrderSchema>
 export type createOrderInput = z.infer<typeof CreateOrderSchema> 

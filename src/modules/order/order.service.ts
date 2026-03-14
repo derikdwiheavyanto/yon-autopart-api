@@ -1,10 +1,10 @@
 import { prisma } from "../../db/prisma";
 import { NotFoundError } from "../../errors/NotFoundError";
+import { StatusTranstionError } from "../../errors/order_error/StatusTransitionError";
+import { StatusOrder } from "../../generated/prisma/enums";
 import catalogService from "../catalog/catalog.service";
 import orderRepository from "./order.repository";
 import { CatalogOrderItems, createOrderInput } from "./order.schema";
-
-
 
 async function createOrder(orderInput: createOrderInput) {
 
@@ -74,5 +74,45 @@ async function createOrderandPrepareWA(body: createOrderInput) {
     return { ...result, waLink }
 }
 
-const OrderService = { createOrder, createOrderandPrepareWA }
+async function getOrder() {
+    return orderRepository.getOrder()
+}
+
+
+const statusFlow: Record<StatusOrder, StatusOrder[]> = {
+    NEW: ["CONFIRMED", "CANCELLED"],
+    CONFIRMED: ["PROCESSING", "CANCELLED"],
+    PROCESSING: ["SHIPPED"],
+    SHIPPED: ["COMPLETED"],
+    COMPLETED: [],
+    CANCELLED: []
+}
+
+async function updateStatusOrder(id: number, status_order: StatusOrder) {
+    const order = await orderRepository.getOrderById(id)
+
+    if (!order) {
+        throw new NotFoundError("Id order tidak ditemukan")
+    }
+
+    const allowedStatus = statusFlow[order.status_order]
+
+    if (!allowedStatus.includes(status_order)) {
+        throw new StatusTranstionError(`Perubahan status tidak diizinkan, berikut status yang diizinkan, ${allowedStatus.join(', ')}`)
+    }
+
+    return orderRepository.updateStatusOrder(id, status_order)
+}
+
+async function getOrderById(id: number) {
+    return orderRepository.getOrderById(id)
+}
+
+const OrderService = {
+    createOrder,
+    createOrderandPrepareWA,
+    getOrder,
+    updateStatusOrder,
+    getOrderById
+}
 export default OrderService
