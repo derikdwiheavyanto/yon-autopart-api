@@ -58,7 +58,8 @@ function getOrderById(id: number) {
                     qty: true,
                     total_price: true,
                     catalog: {
-                        omit: { price: true, updated_at: true, created_at: true, id: true }
+                        omit: { price: true, updated_at: true, created_at: true, id: true },
+                        include: {images: true}
                     }
                 }
             }
